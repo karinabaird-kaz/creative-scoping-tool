@@ -339,12 +339,21 @@ const campaignDiscoveryPhase: Phase = {
       id: 'campaign-customer-research',
       name: 'Customer Research',
       description:
-        'Secondary desk research and/or Primary Qual and/or quant e.g. Conduct surveys or focus groups to understand audience. Dependent on access to customers for research purposes, this stage could incur further third party costs.',
+        'Secondary desk research and/or Primary Qual and/or quant e.g. Conduct surveys or focus groups to understand audience. Dependent on access to customers for research purposes.',
       clientService: { low: 0, high: 0 },
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
-      bespoke: true,
+    },
+    {
+      id: 'campaign-customer-research-tp',
+      name: 'Customer Research - Third Party Costs',
+      description: 'Third party costs associated with customer research e.g. panel recruitment, incentives, platform fees.',
+      clientService: { low: 0, high: 0 },
+      strategy: { low: 0, high: 0 },
+      design: { low: 0, high: 0 },
+      copywriter: { low: 0, high: 0 },
+      addon: true,
     },
   ],
 };
