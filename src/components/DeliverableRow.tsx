@@ -37,17 +37,12 @@ function calcCost(
     'design',
     'copywriter',
   ];
+  const sell = deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0;
   if (band === 'low') {
-    return disciplines.reduce(
-      (sum, d) => sum + deliverable[d].low * rates[d],
-      0
-    );
+    return disciplines.reduce((sum, d) => sum + deliverable[d].low * rates[d], 0) + sell;
   }
   if (band === 'high') {
-    return disciplines.reduce(
-      (sum, d) => sum + deliverable[d].high * rates[d],
-      0
-    );
+    return disciplines.reduce((sum, d) => sum + deliverable[d].high * rates[d], 0) + sell;
   }
   const low = calcCost(deliverable, rates, 'low');
   const high = calcCost(deliverable, rates, 'high');
@@ -246,14 +241,19 @@ export function DeliverableRow({
           ) : (
             <>
               <span className="bg-gray-100 text-gray-600 text-[10px] py-0.5 rounded-full w-12 text-center">
-                {fmt(low)}
+                {fmt(low - (deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0))}
               </span>
               <span className="bg-gray-300 text-gray-700 text-[10px] py-0.5 rounded-full w-12 text-center">
-                {fmt(mid)}
+                {fmt(mid - (deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0))}
               </span>
               <span className="bg-gray-700 text-white text-[10px] py-0.5 rounded-full w-12 text-center">
-                {fmt(high)}
+                {fmt(high - (deliverable.sellField ? (deliverable.fixedFee ?? 0) : 0))}
               </span>
+              {deliverable.sellField && (
+                <span className="bg-[#fff230] text-black text-[10px] font-semibold py-0.5 rounded-full w-12 text-center">
+                  {fmt(deliverable.fixedFee ?? 0)}
+                </span>
+              )}
             </>
           )}
         </div>
