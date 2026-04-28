@@ -45,31 +45,24 @@ export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) 
         logging: false,
       });
 
-      // A4 landscape in mm
-      const pageW = 297;
-      const pageH = 210;
-      const pad = 12; // black border padding in mm
+      const pad = 12; // padding in mm
+      const maxW = 297; // max width in mm (A4 landscape width)
 
-      const availW = pageW - pad * 2;
-      const availH = pageH - pad * 2;
+      // Scale image to fit max width, preserving aspect ratio
       const ratio = canvas.width / canvas.height;
+      const imgW = maxW - pad * 2;
+      const imgH = imgW / ratio;
 
-      let imgW = availW;
-      let imgH = imgW / ratio;
-      if (imgH > availH) {
-        imgH = availH;
-        imgW = imgH * ratio;
-      }
+      // Page size exactly fits content + padding
+      const pageW = imgW + pad * 2;
+      const pageH = imgH + pad * 2;
 
-      const x = pad + (availW - imgW) / 2;
-      const y = pad + (availH - imgH) / 2;
-
-      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+      const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: [pageH, pageW] });
       // Fill page black
       pdf.setFillColor(10, 10, 10);
       pdf.rect(0, 0, pageW, pageH, 'F');
-      // Place image
-      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', x, y, imgW, imgH);
+      // Place image top-aligned
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', pad, pad, imgW, imgH);
       pdf.save(`${pkg.name} - Brand Scope.pdf`);
     } finally {
       setGenerating(false);
