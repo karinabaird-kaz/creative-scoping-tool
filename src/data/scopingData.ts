@@ -425,7 +425,6 @@ const campaignIdentityPhase: Phase = {
       strategy: { low: 1, high: 3 },
       design: { low: 15, high: 38 },
       copywriter: { low: 15, high: 38 },
-      addon: true,
     },
     {
       id: 'ideation-r2',
@@ -435,7 +434,6 @@ const campaignIdentityPhase: Phase = {
       strategy: { low: 1, high: 2 },
       design: { low: 5, high: 15 },
       copywriter: { low: 5, high: 15 },
-      addon: true,
     },
     {
       id: 'ideation-r3',
@@ -456,7 +454,6 @@ const campaignIdentityPhase: Phase = {
       strategy: { low: 0, high: 0 },
       design: { low: 5, high: 30 },
       copywriter: { low: 5, high: 20 },
-      addon: true,
     },
     {
       id: 'design-dev-r2',
@@ -466,7 +463,6 @@ const campaignIdentityPhase: Phase = {
       strategy: { low: 0, high: 0 },
       design: { low: 3, high: 20 },
       copywriter: { low: 3, high: 10 },
-      addon: true,
     },
     {
       id: 'design-dev-r3',
