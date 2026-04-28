@@ -355,7 +355,7 @@ export const packages: Package[] = [
   {
     id: 'internal-brand',
     label: 'Internal Brand',
-    name: 'Internal Brand Development',
+    name: 'Internal Brand Strategy',
     subtitle: 'e.g. mission, vision, values',
     phases: 'Phases 1 + 2 - Internal focus',
     phaseGroup: 'strategy',

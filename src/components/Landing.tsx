@@ -92,8 +92,8 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect }: Packag
       <div className="mt-3 mb-3 space-y-1">
         {pkg.data.flatMap((phase) => phase.deliverables).map((d) => (
           <div key={d.id} className="flex items-start gap-1.5">
-            <span className={`mt-[3px] flex-shrink-0 w-1 h-1 rounded-full ${d.addon ? 'bg-white/25' : 'bg-[#fff230]/60'}`} />
-            <span className={`text-[10px] leading-snug ${d.addon ? 'text-white/35' : 'text-white/60'}`}>
+            <span className={`mt-[4px] flex-shrink-0 w-1 h-1 rounded-full ${d.addon ? 'bg-white/30' : 'bg-[#fff230]/70'}`} />
+            <span className={`text-[12px] leading-snug ${d.addon ? 'text-white/50' : 'text-white'}`}>
               {d.name}
             </span>
           </div>
