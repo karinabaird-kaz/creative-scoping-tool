@@ -36,9 +36,23 @@ export function Landing({ packages, onSelect }: LandingProps) {
 
         <div className="mb-5">
           <h1 className="text-white text-2xl font-bold mb-1">Brand Scoping Tool</h1>
-          <p className="text-white/70 text-xs">
-            Select a package to build your scope and estimate.
+          <p className="text-white/70 text-xs mb-2">
+            Select a strategy package below to begin.
           </p>
+          <ul className="space-y-0.5">
+            {[
+              'Toggle deliverables on or off to refine your scope',
+              'Expand any row to adjust hours by discipline',
+              'Add a creative phase at any point',
+              'Update service rates per hour',
+              'All costs update in real time',
+            ].map((tip) => (
+              <li key={tip} className="flex items-start gap-1.5 text-white/50 text-[11px]">
+                <span className="mt-[3px] flex-shrink-0 text-[#fff230]">•</span>
+                {tip}
+              </li>
+            ))}
+          </ul>
         </div>
 
         <div className="flex-1">
