@@ -48,7 +48,7 @@ export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) 
         logging: false,
       });
 
-      const pad = 12;
+      const pad = 5;
       const maxW = 297;
       const ratio = canvas.width / canvas.height;
       const imgW = maxW - pad * 2;

@@ -234,8 +234,6 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
             label="Low"
             fee={totalLowFee}
             hrs={totalLowHrs}
-            strategyFee={hasCreative ? strategyLowFee : undefined}
-            creativeFee={hasCreative ? creativeLowFee : undefined}
             selected={selectedBand === 'low'}
             onClick={() => setSelectedBand('low')}
           />
@@ -243,8 +241,6 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
             label="Mid"
             fee={totalMidFee}
             hrs={midHrs}
-            strategyFee={hasCreative ? strategyMidFee : undefined}
-            creativeFee={hasCreative ? creativeMidFee : undefined}
             selected={selectedBand === 'mid'}
             onClick={() => setSelectedBand('mid')}
           />
@@ -252,14 +248,12 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
             label="High"
             fee={totalHighFee}
             hrs={totalHighHrs}
-            strategyFee={hasCreative ? strategyHighFee : undefined}
-            creativeFee={hasCreative ? creativeHighFee : undefined}
             selected={selectedBand === 'high'}
             onClick={() => setSelectedBand('high')}
           />
           <button
             onClick={() => setShowSummary(true)}
-            className={`bg-[#fff230] rounded-xl px-8 flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors ${hasCreative ? 'h-auto py-3' : 'h-[56px]'}`}
+            className="bg-[#fff230] rounded-xl px-8 h-[56px] flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors"
           >
             View client summary
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -280,19 +274,15 @@ interface SummaryTileProps {
   label: string;
   fee: number;
   hrs: number;
-  strategyFee?: number;
-  creativeFee?: number;
   selected?: boolean;
   onClick?: () => void;
 }
 
-function SummaryTile({ label, fee, hrs, strategyFee, creativeFee, selected, onClick }: SummaryTileProps) {
-  const hasBreakdown = strategyFee !== undefined;
+function SummaryTile({ label, fee, hrs, selected, onClick }: SummaryTileProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center rounded-xl px-8 gap-0 transition-all duration-150 outline-none
-        ${hasBreakdown ? 'py-3 h-auto' : 'h-[56px]'}
+      className={`flex flex-col items-center justify-center rounded-xl px-8 h-[56px] gap-0 transition-all duration-150 outline-none
         ${selected ? 'bg-[#fff230]' : 'bg-[#e8e8e8] hover:bg-[#e0e0e0]'}
       `}
     >
@@ -302,16 +292,6 @@ function SummaryTile({ label, fee, hrs, strategyFee, creativeFee, selected, onCl
       <p className="text-sm font-bold leading-none text-black">
         ${Math.round(fee).toLocaleString()}
       </p>
-      {hasBreakdown && (
-        <div className="flex gap-3 mt-0.5">
-          <span className="text-[10px] text-black/40">
-            Strategy ${Math.round(strategyFee!).toLocaleString()}
-          </span>
-          <span className="text-[10px] text-black/40">
-            Creative ${Math.round(creativeFee!).toLocaleString()}
-          </span>
-        </div>
-      )}
       <p className="text-[11px] text-black/40 mt-0.5">
         {hrs} hrs
       </p>
