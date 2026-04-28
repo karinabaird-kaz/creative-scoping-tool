@@ -122,30 +122,30 @@ export function DeliverableRow({
 
   return (
     <div
-      className={`bg-white border border-[#e8e8e8] rounded-2xl overflow-hidden transition-opacity duration-200 ${
+      className={`bg-white border border-[#e8e8e8] rounded-xl overflow-hidden transition-opacity duration-200 ${
         deliverable.enabled ? '' : 'opacity-40'
       }`}
     >
       <div
-        className="flex items-center gap-3 px-4 py-1.5 cursor-pointer select-none"
+        className="flex items-center gap-2 px-3 py-1 cursor-pointer select-none"
         onClick={() => setExpanded(!expanded)}
       >
         <button
           onClick={toggleEnabled}
-          className={`relative flex-shrink-0 w-8 h-5 rounded-full transition-colors duration-200 ${
+          className={`relative flex-shrink-0 w-7 h-4 rounded-full transition-colors duration-200 ${
             deliverable.enabled ? 'bg-[#111]' : 'bg-gray-300'
           }`}
           aria-label={deliverable.enabled ? 'Disable' : 'Enable'}
         >
           <span
-            className={`absolute top-0.5 w-3.5 h-3.5 rounded-full transition-all duration-200 ${
-              deliverable.enabled ? 'left-4 bg-[#fff230]' : 'left-0.5 bg-white'
+            className={`absolute top-0.5 w-3 h-3 rounded-full transition-all duration-200 ${
+              deliverable.enabled ? 'left-3.5 bg-[#fff230]' : 'left-0.5 bg-white'
             }`}
           />
         </button>
 
         <span
-          className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ${
+          className={`text-[8px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-full flex-shrink-0 ${
             deliverable.addon
               ? 'bg-orange-100 text-orange-500'
               : 'bg-green-100 text-green-600'
@@ -154,28 +154,28 @@ export function DeliverableRow({
           {deliverable.addon ? 'Add-on' : 'Core'}
         </span>
 
-        <span className="flex-1 text-[13px] font-semibold text-black">
+        <span className="flex-1 text-[11px] font-semibold text-black">
           {deliverable.name}
         </span>
 
-        <div className="flex gap-2 items-center mr-2">
+        <div className="flex gap-1.5 items-center mr-1">
           {deliverable.bespoke ? (
-            <span className="bg-blue-100 text-blue-600 text-[11px] font-semibold py-0.5 rounded-full w-20 text-center">
+            <span className="bg-blue-100 text-blue-600 text-[10px] font-semibold py-0.5 rounded-full w-16 text-center">
               Bespoke
             </span>
           ) : isFixed ? (
-            <span className="bg-gray-300 text-gray-700 text-[11px] py-0.5 rounded-full w-20 text-center">
+            <span className="bg-gray-300 text-gray-700 text-[10px] py-0.5 rounded-full w-16 text-center">
               {fmt(deliverable.fixedFee!)}
             </span>
           ) : (
             <>
-              <span className="bg-gray-100 text-gray-600 text-[11px] py-0.5 rounded-full w-14 text-center">
+              <span className="bg-gray-100 text-gray-600 text-[10px] py-0.5 rounded-full w-12 text-center">
                 {fmt(low)}
               </span>
-              <span className="bg-gray-300 text-gray-700 text-[11px] py-0.5 rounded-full w-14 text-center">
+              <span className="bg-gray-300 text-gray-700 text-[10px] py-0.5 rounded-full w-12 text-center">
                 {fmt(mid)}
               </span>
-              <span className="bg-gray-700 text-white text-[11px] py-0.5 rounded-full w-14 text-center">
+              <span className="bg-gray-700 text-white text-[10px] py-0.5 rounded-full w-12 text-center">
                 {fmt(high)}
               </span>
             </>
@@ -183,7 +183,7 @@ export function DeliverableRow({
         </div>
 
         <svg
-          className="w-3.5 h-3.5 text-gray-400 flex-shrink-0"
+          className="w-3 h-3 text-gray-400 flex-shrink-0"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
@@ -193,22 +193,22 @@ export function DeliverableRow({
       </div>
 
       {expanded && (
-        <div className="border-t border-[#e8e8e8] px-4 pb-2 pt-2">
+        <div className="border-t border-[#e8e8e8] px-3 pb-1.5 pt-1.5">
           <textarea
             value={deliverable.description}
             onChange={(e) => onChange({ ...deliverable, description: e.target.value })}
             rows={1}
-            className="w-full text-[12px] text-black mb-2 bg-transparent border border-transparent hover:border-[#e8e8e8] focus:border-gray-300 rounded-lg px-2 py-0.5 -mx-2 resize-none focus:outline-none transition-colors"
+            className="w-full text-[11px] text-black mb-1.5 bg-transparent border border-transparent hover:border-[#e8e8e8] focus:border-gray-300 rounded-lg px-2 py-0.5 -mx-2 resize-none focus:outline-none transition-colors"
           />
 
           {isFixed ? (
-            <div className="flex items-center gap-6">
+            <div className="flex items-center gap-5">
               <div className="flex items-center gap-2">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
                   Third Party Costs (Ex GST)
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="text-[12px] text-gray-400">$</span>
+                  <span className="text-[11px] text-gray-400">$</span>
                   <input
                     type="number"
                     min={0}
@@ -220,16 +220,16 @@ export function DeliverableRow({
                         thirdPartyCost: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
                       })
                     }
-                    className="w-28 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
+                    className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
                   />
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider">
                   Sell
                 </p>
                 <div className="flex items-center gap-1">
-                  <span className="text-[12px] text-gray-400">$</span>
+                  <span className="text-[11px] text-gray-400">$</span>
                   <input
                     type="number"
                     min={0}
@@ -241,7 +241,7 @@ export function DeliverableRow({
                         fixedFee: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
                       })
                     }
-                    className="w-28 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
+                    className="w-24 border border-[#e8e8e8] rounded-lg px-2 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
                   />
                 </div>
               </div>
@@ -251,15 +251,15 @@ export function DeliverableRow({
               {DISCIPLINES.map(({ key, label }, i) => (
                 <div
                   key={key}
-                  className={`flex flex-col gap-1.5 flex-1 px-5 ${i === 0 ? 'pl-0' : ''}`}
+                  className={`flex flex-col gap-1 flex-1 px-4 ${i === 0 ? 'pl-0' : ''}`}
                 >
-                  <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">
+                  <p className="text-[9px] font-semibold text-gray-500 uppercase tracking-wider mb-0.5">
                     {label}
                   </p>
-                  <div className="flex gap-2">
+                  <div className="flex gap-1.5">
                     {(['low', 'high'] as const).map((band) => (
                       <div key={band}>
-                        <label className="text-[11px] text-gray-400 block mb-0.5 capitalize">
+                        <label className="text-[10px] text-gray-400 block mb-0.5 capitalize">
                           {band}
                         </label>
                         <input
@@ -269,12 +269,12 @@ export function DeliverableRow({
                           onChange={(e) =>
                             updateHours(key, band, parseFloat(e.target.value))
                           }
-                          className="w-12 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
+                          className="w-10 border border-[#e8e8e8] rounded-lg px-1.5 py-0.5 text-[11px] text-black focus:outline-none focus:border-gray-400"
                         />
                       </div>
                     ))}
                   </div>
-                  <p className="text-[11px] text-gray-400 mt-0.5">
+                  <p className="text-[10px] text-gray-400 mt-0.5">
                     ${Math.round(deliverable[key].low * rates[key]).toLocaleString()} -{' '}
                     ${Math.round(deliverable[key].high * rates[key]).toLocaleString()}
                   </p>

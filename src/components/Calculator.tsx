@@ -154,7 +154,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
       />
 
       <div className="flex-1 bg-[#f5f5f5] flex flex-col overflow-hidden">
-        <div className="flex-1 px-6 py-4 overflow-y-auto">
+        <div className="flex-1 px-5 py-3 overflow-y-auto">
           {pkg.calculatorNote && (
             <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-2.5">
               <p className="text-[12px] text-blue-700 leading-snug">
@@ -237,7 +237,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
           )}
         </div>
 
-        <div className="bg-[#f5f5f5] border-t border-[#e0e0e0] px-8 py-3 flex items-center justify-center gap-3 flex-shrink-0">
+        <div className="bg-[#f5f5f5] border-t border-[#e0e0e0] px-6 py-2 flex items-center justify-center gap-2.5 flex-shrink-0">
           <SummaryTile
             label="Low"
             fee={totalLowFee}
@@ -261,7 +261,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
           />
           <button
             onClick={() => setShowSummary(true)}
-            className="bg-[#fff230] rounded-xl px-8 h-[56px] flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors"
+            className="bg-[#fff230] rounded-xl px-6 h-[44px] flex items-center gap-2 font-bold text-xs text-black hover:bg-[#f5e820] transition-colors"
           >
             View client summary
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -290,17 +290,17 @@ function SummaryTile({ label, fee, hrs, selected, onClick }: SummaryTileProps) {
   return (
     <button
       onClick={onClick}
-      className={`flex flex-col items-center justify-center rounded-xl px-8 h-[56px] gap-0 transition-all duration-150 outline-none
+      className={`flex flex-col items-center justify-center rounded-xl px-6 h-[44px] gap-0 transition-all duration-150 outline-none
         ${selected ? 'bg-[#fff230]' : 'bg-[#e8e8e8] hover:bg-[#e0e0e0]'}
       `}
     >
-      <p className="text-[9px] font-semibold uppercase tracking-widest text-black/40">
+      <p className="text-[8px] font-semibold uppercase tracking-widest text-black/40">
         {label}
       </p>
-      <p className="text-sm font-bold leading-none text-black">
+      <p className="text-xs font-bold leading-none text-black">
         ${Math.round(fee).toLocaleString()}
       </p>
-      <p className="text-[11px] text-black/40 mt-0.5">
+      <p className="text-[10px] text-black/40 mt-0.5">
         {hrs} hrs
       </p>
     </button>

@@ -18,7 +18,7 @@ const RATE_FIELDS: { key: keyof Rates; label: string }[] = [
 
 export function SidePanel({ pkg, rates, onRateChange, onBack }: SidePanelProps) {
   return (
-    <div className="w-[220px] flex-shrink-0 bg-[#0e0e0e] flex flex-col h-screen sticky top-0 px-5 py-5 overflow-y-auto">
+    <div className="w-[190px] flex-shrink-0 bg-[#0e0e0e] flex flex-col h-screen sticky top-0 px-4 py-4 overflow-y-auto">
       <div className="mb-5">
         <Logo className="h-5 w-auto" />
       </div>
