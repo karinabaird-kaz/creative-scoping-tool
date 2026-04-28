@@ -81,7 +81,7 @@ const discoveryPhaseGold: Phase = {
       id: 'qual-research',
       name: 'Qual Research - Customer',
       description:
-        'Conduct either face to face or online focus groups or interviews to better understand target audiences attitudes and behaviours. Price depends on methodology and number of participants, incentives etc.',
+        'Conduct either face to face or online focus groups or interviews to better understand target audiences attitudes and behaviours. Price depends on methodology and number of participants, incentives etc',
       clientService: { low: 0, high: 0 },
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
@@ -93,7 +93,7 @@ const discoveryPhaseGold: Phase = {
       id: 'quant-research',
       name: 'Quant Research - Customer',
       description:
-        'Bespoke survey to existing and new customers, using one of our preferred platforms (Focal Data or Lysnna etc.). Price depends on sample size and customer incidence rate of target consumer/audience.',
+        'Bespoke survey to existing and new customers, using one of our preferred platforms (Focal Data or Lysnna etc.). Price depends on sample size and customer incidence rate of target consumer/audience',
       clientService: { low: 0, high: 0 },
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },
@@ -348,7 +348,7 @@ const campaignDiscoveryPhase: Phase = {
     {
       id: 'campaign-customer-research-tp',
       name: 'Customer Research - Third Party Costs',
-      description: 'Third party costs associated with customer research e.g. panel recruitment, incentives, platform fees.',
+      description: 'Third party costs associated with customer research e.g. panel recruitment, incentives, platform fees',
       clientService: { low: 0, high: 0 },
       strategy: { low: 0, high: 0 },
       design: { low: 0, high: 0 },

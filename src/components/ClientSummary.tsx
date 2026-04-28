@@ -1,12 +1,16 @@
 import { useRef, useState } from 'react';
 import type { Package } from '../data/scopingData';
 import type { PhaseState } from './PhaseSection';
+import { calcCost } from './DeliverableRow';
+import type { Rates } from './DeliverableRow';
 import { Logo } from './Logo';
 
 interface ClientSummaryProps {
   pkg: Package;
   phases: PhaseState[];
   fee: number;
+  rates: Rates;
+  band: 'low' | 'mid' | 'high';
   onBack: () => void;
 }
 
@@ -51,22 +55,27 @@ function consolidateCampaignDeliverables(deliverables: SummaryDeliverable[]): Su
   return result;
 }
 
-export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) {
+export function ClientSummary({ pkg, phases, fee, rates, band, onBack }: ClientSummaryProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
 
   const isCampaign = pkg.phaseGroup === 'campaign';
 
-  const enabledPhases = phases.map((p) => ({
-    ...p,
-    deliverables: (() => {
-      const filtered = p.deliverables
-        .filter((d) => d.enabled)
-        .filter((d) => !isLaterRound(d.name));
-      return isCampaign ? consolidateCampaignDeliverables(filtered) : filtered;
-    })(),
-  })).filter((p) => p.deliverables.length > 0);
+  function calcPhaseFee(phase: PhaseState): number {
+    return phase.deliverables
+      .filter((d) => d.enabled)
+      .reduce((sum, d) => sum + calcCost(d, rates, band), 0);
+  }
+
+  const enabledPhases = phases.map((p) => {
+    const filtered = p.deliverables
+      .filter((d) => d.enabled)
+      .filter((d) => !isLaterRound(d.name));
+    const displayDeliverables = isCampaign ? consolidateCampaignDeliverables(filtered) : filtered;
+    const phaseFee = calcPhaseFee(p);
+    return { ...p, deliverables: displayDeliverables, phaseFee };
+  }).filter((p) => p.deliverables.length > 0);
 
   async function downloadPDF() {
     if (!contentRef.current) return;
@@ -186,6 +195,15 @@ export function ClientSummary({ pkg, phases, fee, onBack }: ClientSummaryProps) 
                   )}
                 </div>
               ))}
+            </div>
+
+            <div className="bg-[#fff230] rounded-xl px-4 py-2.5 flex items-center justify-between">
+              <p className="text-black text-[11px] font-semibold uppercase tracking-wider">
+                {stripPhaseNumber(phase.title)} Total
+              </p>
+              <p className="text-black text-[13px] font-bold">
+                ${Math.round(phase.phaseFee).toLocaleString()}
+              </p>
             </div>
           </div>
         ))}

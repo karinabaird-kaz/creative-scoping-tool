@@ -139,6 +139,8 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
         pkg={pkg}
         phases={[...phases, ...creativePhases]}
         fee={selectedFee}
+        rates={rates}
+        band={selectedBand}
         onBack={() => setShowSummary(false)}
       />
     );
