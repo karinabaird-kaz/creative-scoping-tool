@@ -13,6 +13,7 @@ type Band = 'low' | 'mid' | 'high';
 interface CalculatorProps {
   pkg: Package;
   onBack: () => void;
+  onHome: () => void;
 }
 
 function buildPhaseState(pkg: Package): PhaseState[] {
@@ -44,7 +45,7 @@ function calcPhaseRange(phase: Phase, rates: Rates) {
   return { lowFee, highFee, lowHrs, highHrs };
 }
 
-export function Calculator({ pkg, onBack }: CalculatorProps) {
+export function Calculator({ pkg, onBack, onHome }: CalculatorProps) {
   const [phases, setPhases] = useState<PhaseState[]>(() => buildPhaseState(pkg));
   const [rates, setRates] = useState<Rates>({
     clientService: DEFAULT_RATE,
@@ -142,6 +143,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
         rates={rates}
         band={selectedBand}
         onBack={() => setShowSummary(false)}
+        onHome={onHome}
       />
     );
   }
@@ -153,6 +155,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
         rates={rates}
         onRateChange={handleRateChange}
         onBack={onBack}
+        onHome={onHome}
       />
 
       <div className="flex-1 bg-[#f5f5f5] flex flex-col overflow-hidden">

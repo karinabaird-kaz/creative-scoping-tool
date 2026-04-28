@@ -12,6 +12,7 @@ interface ClientSummaryProps {
   rates: Rates;
   band: 'low' | 'mid' | 'high';
   onBack: () => void;
+  onHome: () => void;
 }
 
 function stripPhaseNumber(title: string): string {
@@ -52,7 +53,7 @@ function consolidateCampaignDeliverables(deliverables: SummaryDeliverable[]): Su
   return result;
 }
 
-export function ClientSummary({ pkg, phases, fee, rates, band, onBack }: ClientSummaryProps) {
+export function ClientSummary({ pkg, phases, fee, rates, band, onBack, onHome }: ClientSummaryProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const [generating, setGenerating] = useState(false);
@@ -117,7 +118,7 @@ export function ClientSummary({ pkg, phases, fee, rates, band, onBack }: ClientS
       {/* Header row: logo + title left, buttons right (buttons hidden during PDF capture) */}
       <div className="flex items-start justify-between mb-5">
         <div>
-          <Logo className="h-5 w-auto mb-4" />
+          <Logo className="h-5 w-auto mb-4" onClick={onHome} />
           <h1 className="text-white text-xl font-bold mb-2">{pkg.name}</h1>
           <p className="text-white text-xl font-bold">
             ${Math.round(fee).toLocaleString()}{' '}

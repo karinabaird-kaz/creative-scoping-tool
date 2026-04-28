@@ -1,13 +1,15 @@
 interface LogoProps {
   className?: string;
+  onClick?: () => void;
 }
 
-export function Logo({ className = '' }: LogoProps) {
+export function Logo({ className = '', onClick }: LogoProps) {
   return (
     <svg
       viewBox="0 0 283.5 85"
       xmlns="http://www.w3.org/2000/svg"
-      className={className}
+      className={`${className}${onClick ? ' cursor-pointer' : ''}`}
+      onClick={onClick}
     >
       <path
         fill="#fff"

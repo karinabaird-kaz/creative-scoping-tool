@@ -7,6 +7,7 @@ interface SidePanelProps {
   rates: Rates;
   onRateChange: (key: keyof Rates, value: number) => void;
   onBack: () => void;
+  onHome: () => void;
 }
 
 const RATE_FIELDS: { key: keyof Rates; label: string }[] = [
@@ -16,11 +17,11 @@ const RATE_FIELDS: { key: keyof Rates; label: string }[] = [
   { key: 'copywriter', label: 'Copywriter' },
 ];
 
-export function SidePanel({ pkg, rates, onRateChange, onBack }: SidePanelProps) {
+export function SidePanel({ pkg, rates, onRateChange, onBack, onHome }: SidePanelProps) {
   return (
     <div className="w-[190px] flex-shrink-0 bg-[#0e0e0e] flex flex-col h-screen sticky top-0 px-4 py-4 overflow-y-auto">
       <div className="mb-5">
-        <Logo className="h-5 w-auto" />
+        <Logo className="h-5 w-auto" onClick={onHome} />
       </div>
 
       <button
