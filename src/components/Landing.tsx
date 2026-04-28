@@ -42,7 +42,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
             Select a package below to begin.
           </p>
           <p className="text-white text-[13px]">
-            Toggle deliverables on or off&nbsp;&nbsp;|&nbsp;&nbsp;Expand any row to adjust hours by discipline&nbsp;&nbsp;|&nbsp;&nbsp;Add a creative phase at any point&nbsp;&nbsp;|&nbsp;&nbsp;Update service rates per hour
+            Toggle deliverables on or off&nbsp;&nbsp;|&nbsp;&nbsp;Expand any row to adjust hours by discipline&nbsp;&nbsp;|&nbsp;&nbsp;Update service rates per hour
           </p>
         </div>
 
