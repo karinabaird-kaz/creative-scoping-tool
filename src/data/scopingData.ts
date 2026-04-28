@@ -18,6 +18,7 @@ export interface Deliverable {
   copywriter: DisciplineHours;
   pagination?: PaginationPage[];
   fixedFee?: number;
+  addon?: boolean;
 }
 
 export interface Phase {
@@ -48,7 +49,7 @@ const discoveryPhaseGold: Phase = {
       id: 'brand-immersion',
       name: 'Brand Immersion Kick Off',
       description:
-        'Fully immerse into the brand and product and align on objective.',
+        'Collaborative kick-off session to fully immerse into the brand and product and align on objective. Opportunity for key stakeholder to share any relevant documentation or existing research for Jaywing\'s review.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 4, high: 10 },
       design: { low: 2, high: 4 },
@@ -58,7 +59,7 @@ const discoveryPhaseGold: Phase = {
       id: 'competitor-market-review',
       name: 'Competitor / Market Review',
       description:
-        'Analyse competitors, positioning, advertising, messaging, perceptions.',
+        'Analyse competitors, category trends and macro trends.',
       clientService: { low: 0, high: 2 },
       strategy: { low: 6, high: 10 },
       design: { low: 0, high: 0 },
@@ -68,7 +69,7 @@ const discoveryPhaseGold: Phase = {
       id: 'stakeholder-interviews',
       name: 'Stakeholder Interviews',
       description:
-        'Personalised round of internal stakeholder interviews to gain insight on sector, current brand and competitor perceptions, brand positioning needs and expectations.',
+        'Personalised round of X internal stakeholder interviewers to gain insight on sector, current brand and competitor perceptions, brand positioning needs and expectations.',
       clientService: { low: 1, high: 4 },
       strategy: { low: 5, high: 12 },
       design: { low: 0, high: 0 },
@@ -84,6 +85,7 @@ const discoveryPhaseGold: Phase = {
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
       fixedFee: 0,
+      addon: true,
     },
     {
       id: 'quant-research',
@@ -95,6 +97,7 @@ const discoveryPhaseGold: Phase = {
       design: { low: 0, high: 0 },
       copywriter: { low: 0, high: 0 },
       fixedFee: 0,
+      addon: true,
     },
     {
       id: 'brand-audit',
@@ -119,7 +122,7 @@ const positioningPhaseGold: Phase = {
       id: 'brand-workshop',
       name: 'Brand Workshop',
       description:
-        'Co-create strategy concepts with key stakeholders.',
+        'Co-create strategy concepts with key stakeholders. Can be 2 or 4 hours depending on scope/complexity/attendees.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 8, high: 14 },
       design: { low: 2, high: 4 },
@@ -129,7 +132,7 @@ const positioningPhaseGold: Phase = {
       id: 'brand-positioning',
       name: 'Brand Positioning',
       description:
-        'Articulation of the perception we want to drive with customers to inform creative development.',
+        'Articulation of the perception we want to drive with customer to inform creative development.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 12, high: 20 },
       design: { low: 0, high: 4 },
@@ -144,6 +147,7 @@ const positioningPhaseGold: Phase = {
       strategy: { low: 10, high: 18 },
       design: { low: 0, high: 3 },
       copywriter: { low: 7, high: 10 },
+      addon: true,
     },
     {
       id: 'brand-house-framework',
@@ -154,6 +158,7 @@ const positioningPhaseGold: Phase = {
       strategy: { low: 1, high: 20 },
       design: { low: 0, high: 12 },
       copywriter: { low: 0, high: 9 },
+      addon: true,
     },
     {
       id: 'internal-brand-positioning',
@@ -164,6 +169,7 @@ const positioningPhaseGold: Phase = {
       strategy: { low: 4, high: 18 },
       design: { low: 0, high: 12 },
       copywriter: { low: 1, high: 11 },
+      addon: true,
     },
   ],
 };
@@ -178,17 +184,17 @@ const bronzeDiscoveryPhase: Phase = {
       id: 'brand-immersion',
       name: 'Brand Immersion Kick Off',
       description:
-        'Fully immerse into the brand and product and align on objective.',
+        'Collaborative kick-off session to fully immerse into the brand and product and align on objective. Opportunity for key stakeholder to share any relevant documentation or existing research for Jaywing\'s review.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 4, high: 10 },
       design: { low: 2, high: 4 },
       copywriter: { low: 1, high: 3 },
     },
     {
-      id: 'competitor-review',
-      name: 'Competitor Review',
+      id: 'competitor-market-review',
+      name: 'Competitor / Market Review',
       description:
-        'Analyse competitors, positioning, advertising, messaging, perceptions.',
+        'Analyse competitors, category trends and macro trends.',
       clientService: { low: 0, high: 2 },
       strategy: { low: 6, high: 10 },
       design: { low: 0, high: 0 },
@@ -198,7 +204,7 @@ const bronzeDiscoveryPhase: Phase = {
       id: 'stakeholder-interviews',
       name: 'Stakeholder Interviews',
       description:
-        'Personalised round of internal stakeholder interviews to gain insight on sector, current brand and competitor perceptions, brand positioning needs and expectations.',
+        'Personalised round of X internal stakeholder interviewers to gain insight on sector, current brand and competitor perceptions, brand positioning needs and expectations.',
       clientService: { low: 1, high: 4 },
       strategy: { low: 5, high: 12 },
       design: { low: 0, high: 0 },
@@ -227,7 +233,7 @@ const bronzePositioningPhase: Phase = {
       id: 'brand-workshop',
       name: 'Brand Workshop',
       description:
-        'Co-create strategy concepts with key stakeholders.',
+        'Co-create strategy concepts with key stakeholders. Can be 2 or 4 hours depending on scope/complexity/attendees.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 8, high: 14 },
       design: { low: 2, high: 4 },
@@ -237,7 +243,7 @@ const bronzePositioningPhase: Phase = {
       id: 'brand-positioning',
       name: 'Brand Positioning',
       description:
-        'Articulation of the perception we want to drive with customers to inform creative development.',
+        'Articulation of the perception we want to drive with customer to inform creative development.',
       clientService: { low: 2, high: 4 },
       strategy: { low: 12, high: 20 },
       design: { low: 0, high: 4 },
@@ -361,7 +367,9 @@ export const packages: Package[] = [
         title: '1 - Discovery',
         objective:
           'Objective: Understand the current cultural landscape and internal brand perceptions. Including (but not limited to):',
-        deliverables: discoveryPhaseGold.deliverables,
+        deliverables: discoveryPhaseGold.deliverables.filter(
+          (d) => d.id !== 'qual-research' && d.id !== 'quant-research'
+        ),
       },
       {
         id: 'positioning',
@@ -370,7 +378,7 @@ export const packages: Package[] = [
           'Objective: Define and document the internal brand. Including (but not limited to):',
         deliverables: [
           positioningPhaseGold.deliverables[0],
-          positioningPhaseGold.deliverables[4],
+          { ...positioningPhaseGold.deliverables[4], addon: false },
         ],
       },
     ],

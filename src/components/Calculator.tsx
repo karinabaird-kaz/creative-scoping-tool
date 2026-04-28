@@ -20,7 +20,7 @@ function buildPhaseState(pkg: Package): PhaseState[] {
     id: phase.id,
     title: phase.title,
     objective: phase.objective,
-    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: true })),
+    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: !d.addon })),
   }));
 }
 
@@ -29,7 +29,7 @@ function phaseToState(phase: Phase): PhaseState {
     id: phase.id,
     title: phase.title,
     objective: phase.objective,
-    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: true })),
+    deliverables: phase.deliverables.map((d) => ({ ...d, enabled: !d.addon })),
   };
 }
 
@@ -229,7 +229,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
           )}
         </div>
 
-        <div className="bg-[#f5f5f5] border-t border-[#e0e0e0] px-8 py-1.5 flex items-center justify-center gap-3 flex-shrink-0">
+        <div className="bg-[#f5f5f5] border-t border-[#e0e0e0] px-8 py-3 flex items-center justify-center gap-3 flex-shrink-0">
           <SummaryTile
             label="Low"
             fee={totalLowFee}
@@ -259,7 +259,7 @@ export function Calculator({ pkg, onBack }: CalculatorProps) {
           />
           <button
             onClick={() => setShowSummary(true)}
-            className={`bg-[#fff230] rounded-xl px-8 flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors ${hasCreative ? 'h-auto py-2' : 'h-[44px]'}`}
+            className={`bg-[#fff230] rounded-xl px-8 flex items-center gap-2 font-bold text-sm text-black hover:bg-[#f5e820] transition-colors ${hasCreative ? 'h-auto py-3' : 'h-[56px]'}`}
           >
             View client summary
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -292,7 +292,7 @@ function SummaryTile({ label, fee, hrs, strategyFee, creativeFee, selected, onCl
     <button
       onClick={onClick}
       className={`flex flex-col items-center justify-center rounded-xl px-8 gap-0 transition-all duration-150 outline-none
-        ${hasBreakdown ? 'py-2 h-auto' : 'h-[44px]'}
+        ${hasBreakdown ? 'py-3 h-auto' : 'h-[56px]'}
         ${selected ? 'bg-[#fff230]' : 'bg-[#e8e8e8] hover:bg-[#e0e0e0]'}
       `}
     >

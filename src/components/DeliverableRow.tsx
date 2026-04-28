@@ -12,6 +12,8 @@ export interface DeliverableState {
   copywriter: { low: number; high: number };
   pagination?: PaginationPage[];
   fixedFee?: number;
+  thirdPartyCost?: number;
+  addon?: boolean;
 }
 
 interface Rates {
@@ -141,6 +143,16 @@ export function DeliverableRow({
           />
         </button>
 
+        <span
+          className={`text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full flex-shrink-0 ${
+            deliverable.addon
+              ? 'bg-orange-100 text-orange-500'
+              : 'bg-green-100 text-green-600'
+          }`}
+        >
+          {deliverable.addon ? 'Add-on' : 'Core'}
+        </span>
+
         <span className="flex-1 text-[13px] font-semibold text-black">
           {deliverable.name}
         </span>
@@ -185,26 +197,49 @@ export function DeliverableRow({
           />
 
           {isFixed ? (
-            <div className="flex items-center gap-3">
-              <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
-                Fee (AUD)
-              </p>
-              <div className="flex items-center gap-1">
-                <span className="text-[12px] text-gray-400">$</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={deliverable.fixedFee}
-                  onChange={(e) =>
-                    onChange({
-                      ...deliverable,
-                      fixedFee: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
-                    })
-                  }
-                  className="w-28 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
-                />
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider whitespace-nowrap">
+                  Third Party Costs (Ex GST)
+                </p>
+                <div className="flex items-center gap-1">
+                  <span className="text-[12px] text-gray-400">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={deliverable.thirdPartyCost ?? ''}
+                    placeholder="0"
+                    onChange={(e) =>
+                      onChange({
+                        ...deliverable,
+                        thirdPartyCost: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
+                      })
+                    }
+                    className="w-28 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
+                  />
+                </div>
               </div>
-              <p className="text-[11px] text-gray-400">Added to all bands</p>
+              <div className="flex items-center gap-2">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
+                  Sell
+                </p>
+                <div className="flex items-center gap-1">
+                  <span className="text-[12px] text-gray-400">$</span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={deliverable.fixedFee ?? ''}
+                    placeholder="0"
+                    onChange={(e) =>
+                      onChange({
+                        ...deliverable,
+                        fixedFee: isNaN(parseFloat(e.target.value)) ? 0 : parseFloat(e.target.value),
+                      })
+                    }
+                    className="w-28 border border-[#e8e8e8] rounded-lg px-2 py-1 text-[12px] text-black focus:outline-none focus:border-gray-400"
+                  />
+                </div>
+              </div>
             </div>
           ) : (
             <div className="flex">
