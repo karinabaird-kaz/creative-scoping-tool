@@ -574,7 +574,7 @@ export const packages: Package[] = [
     narrative:
       'A campaign engagement covering strategic insight, campaign planning and creative ideation through to design development. Scope varies significantly based on research requirements and creative output. All rows are editable.',
     calculatorNote:
-      'Customer Research and Design Development hours are indicative only and should be scoped per brief.',
+      'Customer Research, ideation and Design Development hours are indicative only and should be scoped to client brief.',
     data: [campaignDiscoveryPhase, campaignPositioningPhase, campaignIdentityPhase],
   },
   {

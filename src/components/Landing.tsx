@@ -37,7 +37,7 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="mb-5">
-          <h1 className="text-white text-2xl font-bold mb-1">Brand Scoping Tool</h1>
+          <h1 className="text-white text-2xl font-bold mb-1">Creative Scoping Tool</h1>
           <p className="text-white/70 text-xs mb-2">
             Select a package below to begin.
           </p>
