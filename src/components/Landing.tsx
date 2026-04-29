@@ -6,6 +6,32 @@ interface LandingProps {
   onSelect: (pkg: Package) => void;
 }
 
+type CardDeliverable = { id: string; name: string; addon?: boolean; bespoke?: boolean };
+
+function collapseRounds(deliverables: CardDeliverable[]): CardDeliverable[] {
+  const result: CardDeliverable[] = [];
+  let ideationAdded = false;
+  let designDevAdded = false;
+  for (const d of deliverables) {
+    if (d.name.startsWith('Ideation Round')) {
+      if (!ideationAdded) {
+        result.push({ ...d, id: 'ideation-merged', name: 'Ideation' });
+        ideationAdded = true;
+      }
+      continue;
+    }
+    if (d.name.startsWith('Design Development R')) {
+      if (!designDevAdded) {
+        result.push({ ...d, id: 'design-dev-merged', name: 'Design Development' });
+        designDevAdded = true;
+      }
+      continue;
+    }
+    result.push(d);
+  }
+  return result;
+}
+
 function calcPackageRange(pkg: Package) {
   let lowHrs = 0;
   let highHrs = 0;
@@ -148,7 +174,7 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect, feeNote 
       )}
 
       <div className="mt-3 mb-3 space-y-1">
-        {pkg.data.flatMap((phase) => phase.deliverables).map((d) => (
+        {collapseRounds(pkg.data.flatMap((phase) => phase.deliverables)).map((d) => (
           <div key={d.id} className="flex items-start gap-1.5">
             <span className={`mt-[4px] flex-shrink-0 w-1 h-1 rounded-full ${
               d.addon || d.bespoke ? 'bg-white/30' : 'bg-[#fff230]/70'
