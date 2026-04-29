@@ -47,34 +47,15 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="flex-1 space-y-8">
-          {/* Campaign Phase — first, aligned to cols 3+4 */}
+          {/* Top row: Misc (col 1) + Campaign (col 3), cols 2 & 4 empty */}
           {campaignPkgs.length > 0 && (
-            <div>
-              <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-                Campaign
-              </p>
-              <div className="grid grid-cols-4 gap-3">
-                {/* Campaign Development — col 1 */}
-                {campaignPkgs.map((pkg) => {
-                  const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
-                  return (
-                    <PackageCard
-                      key={pkg.id}
-                      pkg={pkg}
-                      hrsLow={hrsLow}
-                      hrsHigh={hrsHigh}
-                      feeLow={feeLow}
-                      feeHigh={feeHigh}
-                      onSelect={onSelect}
-                      feeNote="Excludes third-party research costs"
-                    />
-                  );
-                })}
-                {/* Misc Creative Scoping placeholder — col 2 */}
-                <div className="bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
-                  <p className="text-white/40 text-[10px] tracking-widest uppercase mb-1 font-semibold">
-                    Misc
-                  </p>
+            <div className="grid grid-cols-4 gap-3">
+              {/* Col 1 — Misc */}
+              <div className="flex flex-col">
+                <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
+                  Misc
+                </p>
+                <div className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
                   <p className="text-white/50 text-[13px] leading-snug mb-1">
                     Misc Creative Scoping Tool
                   </p>
@@ -90,6 +71,34 @@ export function Landing({ packages, onSelect }: LandingProps) {
                   </div>
                 </div>
               </div>
+
+              {/* Col 2 — empty */}
+              <div />
+
+              {/* Col 3 — Campaign */}
+              <div className="flex flex-col">
+                <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
+                  Campaign
+                </p>
+                {campaignPkgs.map((pkg) => {
+                  const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
+                  return (
+                    <PackageCard
+                      key={pkg.id}
+                      pkg={pkg}
+                      hrsLow={hrsLow}
+                      hrsHigh={hrsHigh}
+                      feeLow={feeLow}
+                      feeHigh={feeHigh}
+                      onSelect={onSelect}
+                      feeNote="Excludes third-party research costs"
+                    />
+                  );
+                })}
+              </div>
+
+              {/* Col 4 — empty */}
+              <div />
             </div>
           )}
 
