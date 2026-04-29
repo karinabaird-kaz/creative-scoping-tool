@@ -47,7 +47,55 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="flex-1 space-y-8">
-          {/* Strategy Phase */}
+          {/* Campaign Phase — first, aligned to cols 3+4 */}
+          {campaignPkgs.length > 0 && (
+            <div>
+              <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
+                Campaign
+              </p>
+              <div className="grid grid-cols-4 gap-3">
+                {/* Spacers to push cards to Bronze/Internal Brand columns */}
+                <div aria-hidden="true" />
+                <div aria-hidden="true" />
+                {campaignPkgs.map((pkg) => {
+                  const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
+                  return (
+                    <PackageCard
+                      key={pkg.id}
+                      pkg={pkg}
+                      hrsLow={hrsLow}
+                      hrsHigh={hrsHigh}
+                      feeLow={feeLow}
+                      feeHigh={feeHigh}
+                      onSelect={onSelect}
+                      feeNote="Excludes third-party research costs"
+                    />
+                  );
+                })}
+                {/* Placeholder card */}
+                <div className="bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
+                  <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
+                    Misc
+                  </p>
+                  <h2 className="text-white text-[16px] font-semibold leading-snug mb-1">
+                    Misc Creative Scoping
+                  </h2>
+                  <p className="text-white/60 text-[11px] leading-snug mb-2">
+                    Effort Calculator
+                  </p>
+                  <div className="flex-1" />
+                  {/* To be built banner */}
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <p className="text-white/20 text-[13px] font-semibold tracking-widest uppercase rotate-[-20deg] border border-white/10 px-4 py-1.5 rounded-full">
+                      To be built
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Brand Phase */}
           <div>
             <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
               Brand
@@ -69,32 +117,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
               })}
             </div>
           </div>
-
-          {/* Campaign Phase */}
-          {campaignPkgs.length > 0 && (
-            <div>
-              <p className="text-white/40 text-[10px] tracking-widest uppercase font-semibold mb-3">
-                Campaign
-              </p>
-              <div className="grid grid-cols-4 gap-3 items-start">
-                {campaignPkgs.map((pkg) => {
-                  const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
-                  return (
-                    <PackageCard
-                      key={pkg.id}
-                      pkg={pkg}
-                      hrsLow={hrsLow}
-                      hrsHigh={hrsHigh}
-                      feeLow={feeLow}
-                      feeHigh={feeHigh}
-                      onSelect={onSelect}
-                      feeNote="Excludes third-party research costs"
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </div>
