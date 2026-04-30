@@ -129,7 +129,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     if (meta.length) meta.push(['']);
     if (proposalDesc) {
       meta.push(['Proposal Description & TCs']);
-      proposalDesc.split('\n').forEach((line) => meta.push([line]));
+      meta.push([proposalDesc]);
       meta.push(['']);
     }
 
@@ -157,8 +157,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       .join('\n');
 
-    const filename = projectName
-      ? `${clientName ? clientName + ' — ' : ''}${projectName} - Effort Calculator.csv`
+    const filename = [clientName, projectName].filter(Boolean).join(' ')
+      ? `${[clientName, projectName].filter(Boolean).join(' ')} - Effort Calculator.csv`
       : 'Effort Calculator.csv';
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
