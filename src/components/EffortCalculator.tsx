@@ -170,8 +170,10 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   }
 
   const colHdr = 'py-2 px-1.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
-  const sectionLabel = 'text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1.5 block';
-  const fieldWrap = 'bg-white border border-white/20 rounded-lg px-2.5 py-1.5 flex items-center';
+  const sectionLabel = 'block text-[10px] font-semibold text-white/50 uppercase tracking-wider mb-1.5';
+  // All three left-column fields share the same fixed width and inner height
+  const fieldWidth = 'w-52';
+  const fieldInner = 'w-full bg-white border border-white/20 rounded-lg px-3 h-9 flex items-center';
 
   return (
     <div className="min-h-screen bg-[#0a0a0a]">
@@ -212,210 +214,205 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
       <div className="px-6 py-4">
 
-        {/* ── Top: Client | Project Name | Global Rate in a row ── */}
-        <div className="flex items-end gap-4 mb-5">
-          <div>
-            <label className={sectionLabel}>Client</label>
-            <div className={fieldWrap}>
-              <input
-                type="text"
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                placeholder="Client name"
-                className="w-40 text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
-              />
+        {/* ── Top: [3 stacked fields] [Proposal Description] ── */}
+        <div className="flex items-start gap-4 mb-5">
+
+          {/* Left column: 3 equal-width equal-height fields */}
+          <div className={`flex-shrink-0 ${fieldWidth} flex flex-col gap-3`}>
+            {/* Client */}
+            <div>
+              <label className={sectionLabel}>Client</label>
+              <div className={fieldInner}>
+                <input
+                  type="text"
+                  value={clientName}
+                  onChange={(e) => setClientName(e.target.value)}
+                  placeholder="Client name"
+                  className="w-full text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Project Name */}
+            <div>
+              <label className={sectionLabel}>Project Name</label>
+              <div className={fieldInner}>
+                <input
+                  type="text"
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                  placeholder="Project name"
+                  className="w-full text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Global Rate */}
+            <div>
+              <label className={sectionLabel}>Cost Rate</label>
+              <div className={`${fieldInner} gap-1`}>
+                <span className="text-xs text-gray-400 flex-shrink-0">$</span>
+                <input
+                  type="number"
+                  min={0}
+                  value={globalRate}
+                  onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
+                  className="flex-1 text-[13px] text-black focus:outline-none bg-transparent"
+                />
+                <span className="text-xs text-gray-400 flex-shrink-0">/hr</span>
+              </div>
             </div>
           </div>
 
-          <div>
-            <label className={sectionLabel}>Project Name</label>
-            <div className={fieldWrap}>
-              <input
-                type="text"
-                value={projectName}
-                onChange={(e) => setProjectName(e.target.value)}
-                placeholder="Project name"
-                className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300 bg-transparent"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className={sectionLabel}>Global Rate</label>
-            <div className={`${fieldWrap} gap-1`}>
-              <span className="text-xs text-gray-400">$</span>
-              <input
-                type="number"
-                min={0}
-                value={globalRate}
-                onChange={(e) => setGlobalRate(parseFloat(e.target.value) || 0)}
-                className="w-16 text-sm text-black focus:outline-none bg-transparent"
-              />
-              <span className="text-xs text-gray-400">/hr</span>
-            </div>
-          </div>
-        </div>
-
-        {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
-        <div className="flex gap-4 items-start">
-
-          {/* Left: Proposal Description & TC's */}
-          <div className="flex-1 flex flex-col min-w-0">
+          {/* Right: Proposal Description & TC's — fills remaining width, matches height of 3 stacked fields */}
+          <div className="flex-1 flex flex-col">
             <label className={sectionLabel}>Proposal Description & TC's</label>
             <textarea
               value={proposalDesc}
               onChange={(e) => setProposalDesc(e.target.value)}
               placeholder="Enter proposal description and terms & conditions…"
-              className="w-full flex-1 bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-              style={{ minHeight: '420px' }}
+              className="flex-1 bg-white border border-white/20 rounded-lg px-3 py-2.5 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
+              style={{ minHeight: '138px' }}
             />
           </div>
+        </div>
 
-          {/* Right: Effort Calculator table */}
-          <div className="flex-shrink-0">
-            <label className={sectionLabel}>Effort Calculator</label>
-            <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
-              <div className="overflow-x-auto px-4 pt-3">
-                {/* Table: 740px total */}
-                <table className="border-collapse text-[12px] table-fixed" style={{ width: '740px' }}>
-                  <thead>
-                    <tr className="border-b-2 border-gray-100">
-                      <th className={`${colHdr} text-left pl-0`} style={{ width: '140px' }}>Service</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R1</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R2</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R3</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R4</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R5</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Meetings</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Contingency</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '60px' }}>Hrs Total</th>
-                      <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
-                      <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
-                      <th style={{ width: '20px' }} />
-                    </tr>
-                  </thead>
+        {/* ── Effort Calculator table — full width ── */}
+        <div>
+          <label className={sectionLabel}>Effort Calculator</label>
+          <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto px-4 pt-3">
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '740px' }}>
+                <thead>
+                  <tr className="border-b-2 border-gray-100">
+                    <th className={`${colHdr} text-left pl-0`} style={{ width: '140px' }}>Service</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R1</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R2</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R3</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R4</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R5</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Meetings</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Contingency</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>Hrs Total</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
+                    <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
+                    <th style={{ width: '20px' }} />
+                  </tr>
+                </thead>
 
-                  <tbody>
-                    {rows.map((row) => {
-                      const hrs = getHoursTotal(row);
-                      const cost = getCost(row, globalRate);
-                      const isOverridden = row.rateOverride !== null;
+                <tbody>
+                  {rows.map((row) => {
+                    const hrs = getHoursTotal(row);
+                    const cost = getCost(row, globalRate);
+                    const isOverridden = row.rateOverride !== null;
 
-                      return (
-                        <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
-                          {/* Service name */}
-                          <td className="py-1 pr-2 pl-0">
-                            {row.isCustom ? (
-                              <input
-                                type="text"
-                                value={row.name}
-                                placeholder="Custom…"
-                                onChange={(e) => updateRowName(row.id, e.target.value)}
-                                className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
-                              />
-                            ) : (
-                              <span className="font-medium text-black whitespace-nowrap">{row.name}</span>
-                            )}
-                          </td>
-
-                          {/* Hour inputs */}
-                          {HRS_FIELDS.map((field) => (
-                            <td key={field} className="py-1 px-1 text-center">
-                              <input
-                                type="number"
-                                min={0}
-                                step={0.5}
-                                value={numDisplay(row[field])}
-                                placeholder="—"
-                                onChange={(e) => updateHours(row.id, field, e.target.value)}
-                                className="w-full text-center border border-transparent group-hover:border-gray-200 rounded-md px-1 py-0.5 text-black focus:outline-none focus:border-gray-300 bg-transparent placeholder-gray-300 transition-colors"
-                              />
-                            </td>
-                          ))}
-
-                          {/* Hours total */}
-                          <td className="py-1 px-1 text-center font-semibold text-black">
-                            {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
-                          </td>
-
-                          {/* Rate */}
-                          <td className="py-1 px-1 text-center">
-                            <div className="flex items-center gap-0.5 border border-gray-200 rounded-md px-1 py-0.5">
-                              <span className="text-[10px] text-gray-400">$</span>
-                              <input
-                                type="number"
-                                min={0}
-                                value={isOverridden ? String(row.rateOverride) : String(globalRate)}
-                                onChange={(e) => updateRateOverride(row.id, e.target.value)}
-                                className="w-10 text-center text-black bg-transparent focus:outline-none text-[12px]"
-                              />
-                            </div>
-                            {isOverridden && (
-                              <button
-                                onClick={() => clearRateOverride(row.id)}
-                                className="text-[9px] text-gray-400 hover:text-red-400 transition-colors mt-0.5 block mx-auto"
-                              >
-                                reset
-                              </button>
-                            )}
-                          </td>
-
-                          {/* Cost */}
-                          <td className="py-1 pl-1 text-right font-semibold text-black pr-0">
-                            {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
-                          </td>
-
-                          {/* Remove */}
-                          <td className="py-1 pl-1.5 pr-0">
-                            <button
-                              onClick={() => removeRow(row.id)}
-                              title="Remove row"
-                              className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all leading-none text-sm"
-                            >
-                              ✕
-                            </button>
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-
-                  <tfoot>
-                    <tr className="border-t-2 border-gray-200 bg-gray-50">
-                      <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
-                        Total
-                      </td>
-                      {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
-                        <td key={i} className="py-2 px-1 text-center font-semibold text-black">
-                          {v > 0 ? v : <span className="text-gray-300">—</span>}
+                    return (
+                      <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
+                        <td className="py-1 pr-2 pl-0">
+                          {row.isCustom ? (
+                            <input
+                              type="text"
+                              value={row.name}
+                              placeholder="Custom…"
+                              onChange={(e) => updateRowName(row.id, e.target.value)}
+                              className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
+                            />
+                          ) : (
+                            <span className="font-medium text-black whitespace-nowrap">{row.name}</span>
+                          )}
                         </td>
-                      ))}
-                      <td className="py-2 px-1 text-center font-bold text-black">
-                        {totalHrs > 0 ? totalHrs : <span className="text-gray-300">—</span>}
-                      </td>
-                      <td className="py-2 px-1" />
-                      <td className="py-2 pl-1 text-right font-bold text-black text-[13px] pr-0">
-                        {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
-                      </td>
-                      <td />
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
 
-              {/* Add row */}
-              <div className="px-4 pb-3">
-                <button
-                  onClick={addCustomRow}
-                  className="mt-2 text-xs text-gray-400 hover:text-gray-700 transition-colors"
-                >
-                  + Add row
-                </button>
-              </div>
+                        {HRS_FIELDS.map((field) => (
+                          <td key={field} className="py-1 px-1 text-center">
+                            <input
+                              type="number"
+                              min={0}
+                              step={0.5}
+                              value={numDisplay(row[field])}
+                              placeholder="—"
+                              onChange={(e) => updateHours(row.id, field, e.target.value)}
+                              className="w-full text-center border border-transparent group-hover:border-gray-200 rounded-md px-1 py-0.5 text-black focus:outline-none focus:border-gray-300 bg-transparent placeholder-gray-300 transition-colors"
+                            />
+                          </td>
+                        ))}
+
+                        <td className="py-1 px-1 text-center font-semibold text-black">
+                          {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
+                        </td>
+
+                        <td className="py-1 px-1 text-center">
+                          <div className="flex items-center gap-0.5 border border-gray-200 rounded-md px-1 py-0.5">
+                            <span className="text-[10px] text-gray-400">$</span>
+                            <input
+                              type="number"
+                              min={0}
+                              value={isOverridden ? String(row.rateOverride) : String(globalRate)}
+                              onChange={(e) => updateRateOverride(row.id, e.target.value)}
+                              className="w-10 text-center text-black bg-transparent focus:outline-none text-[12px]"
+                            />
+                          </div>
+                          {isOverridden && (
+                            <button
+                              onClick={() => clearRateOverride(row.id)}
+                              className="text-[9px] text-gray-400 hover:text-red-400 transition-colors mt-0.5 block mx-auto"
+                            >
+                              reset
+                            </button>
+                          )}
+                        </td>
+
+                        <td className="py-1 pl-1 text-right font-semibold text-black pr-0">
+                          {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
+                        </td>
+
+                        <td className="py-1 pl-1.5 pr-0">
+                          <button
+                            onClick={() => removeRow(row.id)}
+                            title="Remove row"
+                            className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all leading-none text-sm"
+                          >
+                            ✕
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+
+                <tfoot>
+                  <tr className="border-t-2 border-gray-200 bg-gray-50">
+                    <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
+                      Total
+                    </td>
+                    {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
+                      <td key={i} className="py-2 px-1 text-center font-semibold text-black">
+                        {v > 0 ? v : <span className="text-gray-300">—</span>}
+                      </td>
+                    ))}
+                    <td className="py-2 px-1 text-center font-bold text-black">
+                      {totalHrs > 0 ? totalHrs : <span className="text-gray-300">—</span>}
+                    </td>
+                    <td className="py-2 px-1" />
+                    <td className="py-2 pl-1 text-right font-bold text-black text-[13px] pr-0">
+                      {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
+                    </td>
+                    <td />
+                  </tr>
+                </tfoot>
+              </table>
+            </div>
+
+            <div className="px-4 pb-3">
+              <button
+                onClick={addCustomRow}
+                className="mt-2 text-xs text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                + Add row
+              </button>
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
   );
