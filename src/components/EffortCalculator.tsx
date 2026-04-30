@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import * as XLSX from 'xlsx';
 import { DEFAULT_RATE, DISCIPLINES } from '../data/effortCalculatorData';
 import { Logo } from './Logo';
 
@@ -95,20 +94,13 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalHrs = rows.reduce((s, r) => s + getHoursTotal(r), 0);
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
-  function exportXLSX() {
+  function exportCSV() {
     const headers = [
-      'Discipline',
-      'Round 1',
-      'Round 2',
-      'Round 3',
-      'Meetings / Admin',
-      'Contingency',
-      'Hours Total',
-      '$ per Hour',
-      'Cost ($)',
+      'Discipline', 'Round 1', 'Round 2', 'Round 3',
+      'Meetings / Admin', 'Contingency', 'Hours Total', '$ per Hour', 'Cost ($)',
     ];
 
-    const data = rows.map((r) => [
+    const dataRows = rows.map((r) => [
       r.name,
       r.r1,
       r.r2,
@@ -121,35 +113,23 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     ]);
 
     const summary = [
-      'TOTAL',
-      totalR1,
-      totalR2,
-      totalR3,
-      totalMeetings,
-      totalContingency,
-      totalHrs,
-      '',
-      Math.round(totalCost),
+      'TOTAL', totalR1, totalR2, totalR3, totalMeetings,
+      totalContingency, totalHrs, '', Math.round(totalCost),
     ];
 
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...data, summary]);
+    const csv = [headers, ...dataRows, summary]
+      .map((row) => row.map((cell) => `"${cell}"`).join(','))
+      .join('\n');
 
-    // Column widths
-    ws['!cols'] = [
-      { wch: 24 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 10 },
-      { wch: 16 },
-      { wch: 13 },
-      { wch: 12 },
-      { wch: 11 },
-      { wch: 12 },
-    ];
-
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'Effort Calculator');
-    XLSX.writeFile(wb, 'Effort Calculator.xlsx');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'Effort Calculator.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   }
 
   const colHdr = 'py-2.5 px-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
@@ -171,13 +151,13 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             Reset
           </button>
           <button
-            onClick={exportXLSX}
+            onClick={exportCSV}
             className="flex items-center gap-1.5 text-black bg-[#fff230] hover:bg-yellow-300 text-xs font-semibold rounded-full px-4 py-1.5 transition-colors"
           >
             <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
             </svg>
-            Export XLSX
+            Export CSV
           </button>
           <button
             onClick={onBack}
