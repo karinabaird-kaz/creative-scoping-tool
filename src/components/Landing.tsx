@@ -85,24 +85,23 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="flex-1 space-y-8">
-          {/* Top row: Misc (col 1) + Campaign (col 3), cols 2 & 4 empty */}
+          {/* Top row: Effort Calculator (cols 1-2) + Campaign (col 3), col 4 empty */}
           {campaignPkgs.length > 0 && (
-            <div className="grid grid-cols-4 gap-3">
-              {/* Col 1 — Misc */}
-              <div className="flex flex-col">
-                <button
-                  onClick={() => setShowEffortCalc(true)}
-                  className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200 relative overflow-hidden"
-                >
-                  <h2 className="text-white text-[16px] font-semibold leading-snug">
-                    Effort Calculator
-                  </h2>
-                  <div className="flex-1" />
-                </button>
-              </div>
-
-              {/* Col 2 — empty */}
-              <div />
+            <div className="grid grid-cols-4 gap-3 items-start">
+              {/* Cols 1-2 — Effort Calculator (spans 2 columns, natural height) */}
+              <button
+                onClick={() => setShowEffortCalc(true)}
+                className="col-span-2 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200"
+              >
+                <h2 className="text-white text-[16px] font-semibold leading-snug mb-3">
+                  Effort Calculator
+                </h2>
+                <div className="space-y-1.5">
+                  <p className="text-white/50 text-[12px] leading-snug">Upload client brief for proposal language.</p>
+                  <p className="text-white/50 text-[12px] leading-snug">Calculate project hours and costs across disciplines.</p>
+                  <p className="text-white/50 text-[12px] leading-snug">Build estimates from scratch, adjust rates, export to CSV.</p>
+                </div>
+              </button>
 
               {/* Col 3 — Campaign */}
               <div className="flex flex-col">
