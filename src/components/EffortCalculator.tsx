@@ -265,21 +265,21 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
         {/* ── Table ── */}
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[12px]" style={{ minWidth: '1060px' }}>
+          <table className="border-collapse text-[12px] table-fixed" style={{ width: '900px' }}>
             <thead>
               <tr className="border-b-2 border-gray-100">
-                <th className={`${colHdr} text-left pl-0 w-36`}>Service</th>
-                <th className={`${colHdr} text-center w-14`}>Round 1</th>
-                <th className={`${colHdr} text-center w-14`}>Round 2</th>
-                <th className={`${colHdr} text-center w-14`}>Round 3</th>
-                <th className={`${colHdr} text-center w-14`}>Round 4</th>
-                <th className={`${colHdr} text-center w-14`}>Round 5</th>
-                <th className={`${colHdr} text-center w-20`}>Meetings / Admin</th>
-                <th className={`${colHdr} text-center w-18`}>Contingency</th>
-                <th className={`${colHdr} text-center w-14`}>Hrs Total</th>
-                <th className={`${colHdr} text-center w-20`}>$ / hr</th>
-                <th className={`${colHdr} text-right w-20 pr-0`}>Cost</th>
-                <th className="w-5" />
+                <th className={`${colHdr} text-left pl-0`} style={{ width: '160px' }}>Service</th>
+                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R1</th>
+                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R2</th>
+                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R3</th>
+                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R4</th>
+                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R5</th>
+                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Meetings</th>
+                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Contingency</th>
+                <th className={`${colHdr} text-center`} style={{ width: '70px' }}>Hrs Total</th>
+                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>$ / hr</th>
+                <th className={`${colHdr} text-right pr-0`} style={{ width: '80px' }}>Cost</th>
+                <th style={{ width: '20px' }} />
               </tr>
             </thead>
 
@@ -400,7 +400,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </button>
 
         {/* ── Notes section ── */}
-        <div className="mt-6 pt-5">
+        <div className="mt-3">
           <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Notes
           </p>
