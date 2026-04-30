@@ -263,158 +263,166 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
         <div className="mb-4" />
 
-        {/* ── Table ── */}
-        <div className="overflow-x-auto">
-          <table className="border-collapse text-[12px] table-fixed" style={{ width: '900px' }}>
-            <thead>
-              <tr className="border-b-2 border-gray-100">
-                <th className={`${colHdr} text-left pl-0`} style={{ width: '160px' }}>Service</th>
-                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R1</th>
-                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R2</th>
-                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R3</th>
-                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R4</th>
-                <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R5</th>
-                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Meetings</th>
-                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Contingency</th>
-                <th className={`${colHdr} text-center`} style={{ width: '70px' }}>Hrs Total</th>
-                <th className={`${colHdr} text-center`} style={{ width: '80px' }}>$ / hr</th>
-                <th className={`${colHdr} text-right pr-0`} style={{ width: '80px' }}>Cost</th>
-                <th style={{ width: '20px' }} />
-              </tr>
-            </thead>
+        {/* ── Table + Notes side by side ── */}
+        <div className="flex gap-4 items-start">
 
-            <tbody>
-              {rows.map((row) => {
-                const hrs = getHoursTotal(row);
-                const cost = getCost(row, globalRate);
-                const isOverridden = row.rateOverride !== null;
+          {/* Left: bordered calc area */}
+          <div className="flex-1 min-w-0 border border-gray-200 rounded-xl overflow-hidden">
+            <div className="overflow-x-auto px-4 pt-3">
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '900px' }}>
+                <thead>
+                  <tr className="border-b-2 border-gray-100">
+                    <th className={`${colHdr} text-left pl-0`} style={{ width: '160px' }}>Service</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R1</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R2</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R3</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R4</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>R5</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Meetings</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '80px' }}>Contingency</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '70px' }}>Hrs Total</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '80px' }}>$ / hr</th>
+                    <th className={`${colHdr} text-right pr-0`} style={{ width: '80px' }}>Cost</th>
+                    <th style={{ width: '20px' }} />
+                  </tr>
+                </thead>
 
-                return (
-                  <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
-                    {/* Discipline name */}
-                    <td className="py-1 pr-2 pl-0">
-                      {row.isCustom ? (
-                        <input
-                          type="text"
-                          value={row.name}
-                          placeholder="Custom…"
-                          onChange={(e) => updateRowName(row.id, e.target.value)}
-                          className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
-                        />
-                      ) : (
-                        <span className="font-medium text-black whitespace-nowrap">{row.name}</span>
-                      )}
+                <tbody>
+                  {rows.map((row) => {
+                    const hrs = getHoursTotal(row);
+                    const cost = getCost(row, globalRate);
+                    const isOverridden = row.rateOverride !== null;
+
+                    return (
+                      <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
+                        {/* Discipline name */}
+                        <td className="py-1 pr-2 pl-0">
+                          {row.isCustom ? (
+                            <input
+                              type="text"
+                              value={row.name}
+                              placeholder="Custom…"
+                              onChange={(e) => updateRowName(row.id, e.target.value)}
+                              className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
+                            />
+                          ) : (
+                            <span className="font-medium text-black whitespace-nowrap">{row.name}</span>
+                          )}
+                        </td>
+
+                        {/* Hour inputs */}
+                        {HRS_FIELDS.map((field) => (
+                          <td key={field} className="py-1 px-1 text-center">
+                            <input
+                              type="number"
+                              min={0}
+                              step={0.5}
+                              value={numDisplay(row[field])}
+                              placeholder="—"
+                              onChange={(e) => updateHours(row.id, field, e.target.value)}
+                              className="w-full text-center border border-transparent group-hover:border-gray-200 rounded-md px-1 py-0.5 text-black focus:outline-none focus:border-gray-300 bg-transparent placeholder-gray-300 transition-colors"
+                            />
+                          </td>
+                        ))}
+
+                        {/* Hours total */}
+                        <td className="py-1 px-1 text-center font-semibold text-black">
+                          {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
+                        </td>
+
+                        {/* Rate */}
+                        <td className="py-1 px-1 text-center">
+                          <div className="flex items-center gap-0.5 border border-gray-200 rounded-md px-1.5 py-0.5">
+                            <span className="text-[10px] text-gray-400">$</span>
+                            <input
+                              type="number"
+                              min={0}
+                              value={isOverridden ? String(row.rateOverride) : String(globalRate)}
+                              onChange={(e) => updateRateOverride(row.id, e.target.value)}
+                              className="w-12 text-center text-black bg-transparent focus:outline-none text-[12px]"
+                            />
+                          </div>
+                          {isOverridden && (
+                            <button
+                              onClick={() => clearRateOverride(row.id)}
+                              className="text-[9px] text-gray-400 hover:text-red-400 transition-colors mt-0.5 block mx-auto"
+                            >
+                              reset
+                            </button>
+                          )}
+                        </td>
+
+                        {/* Cost */}
+                        <td className="py-1 pl-2 text-right font-semibold text-black pr-0">
+                          {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
+                        </td>
+
+                        {/* Remove */}
+                        <td className="py-1 pl-1.5 pr-0">
+                          <button
+                            onClick={() => removeRow(row.id)}
+                            title="Remove row"
+                            className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all leading-none text-sm"
+                          >
+                            ✕
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+
+                <tfoot>
+                  <tr className="border-t-2 border-gray-200 bg-gray-50">
+                    <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
+                      Total
                     </td>
-
-                    {/* Hour inputs */}
-                    {HRS_FIELDS.map((field) => (
-                      <td key={field} className="py-1 px-1 text-center">
-                        <input
-                          type="number"
-                          min={0}
-                          step={0.5}
-                          value={numDisplay(row[field])}
-                          placeholder="—"
-                          onChange={(e) => updateHours(row.id, field, e.target.value)}
-                          className="w-full text-center border border-transparent group-hover:border-gray-200 rounded-md px-1 py-0.5 text-black focus:outline-none focus:border-gray-300 bg-transparent placeholder-gray-300 transition-colors"
-                        />
+                    {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
+                      <td key={i} className="py-2 px-1 text-center font-semibold text-black">
+                        {v > 0 ? v : <span className="text-gray-300">—</span>}
                       </td>
                     ))}
-
-                    {/* Hours total */}
-                    <td className="py-1 px-1 text-center font-semibold text-black">
-                      {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
+                    <td className="py-2 px-1 text-center font-bold text-black">
+                      {totalHrs > 0 ? totalHrs : <span className="text-gray-300">—</span>}
                     </td>
-
-                    {/* Rate */}
-                    <td className="py-1 px-1 text-center">
-                      <div className="flex items-center gap-0.5 border border-gray-200 rounded-md px-1.5 py-0.5">
-                        <span className="text-[10px] text-gray-400">$</span>
-                        <input
-                          type="number"
-                          min={0}
-                          value={isOverridden ? String(row.rateOverride) : String(globalRate)}
-                          onChange={(e) => updateRateOverride(row.id, e.target.value)}
-                          className="w-12 text-center text-black bg-transparent focus:outline-none text-[12px]"
-                        />
-                      </div>
-                      {isOverridden && (
-                        <button
-                          onClick={() => clearRateOverride(row.id)}
-                          className="text-[9px] text-gray-400 hover:text-red-400 transition-colors mt-0.5 block mx-auto"
-                        >
-                          reset
-                        </button>
-                      )}
+                    <td className="py-2 px-1" />
+                    <td className="py-2 pl-2 text-right font-bold text-black text-[13px] pr-0">
+                      {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
                     </td>
-
-                    {/* Cost */}
-                    <td className="py-1 pl-2 text-right font-semibold text-black pr-0">
-                      {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
-                    </td>
-
-                    {/* Remove */}
-                    <td className="py-1 pl-1.5 pr-0">
-                      <button
-                        onClick={() => removeRow(row.id)}
-                        title="Remove row"
-                        className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all leading-none text-sm"
-                      >
-                        ✕
-                      </button>
-                    </td>
+                    <td />
                   </tr>
-                );
-              })}
-            </tbody>
+                </tfoot>
+              </table>
+            </div>
 
-            <tfoot>
-              <tr className="border-t-2 border-gray-200 bg-gray-50">
-                <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
-                  Total
-                </td>
-                {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
-                  <td key={i} className="py-2 px-1 text-center font-semibold text-black">
-                    {v > 0 ? v : <span className="text-gray-300">—</span>}
-                  </td>
-                ))}
-                <td className="py-2 px-1 text-center font-bold text-black">
-                  {totalHrs > 0 ? totalHrs : <span className="text-gray-300">—</span>}
-                </td>
-                <td className="py-2 px-1" />
-                <td className="py-2 pl-2 text-right font-bold text-black text-[13px] pr-0">
-                  {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
-                </td>
-                <td />
-              </tr>
-            </tfoot>
-          </table>
-        </div>
+            {/* Add row — inside the border */}
+            <div className="px-4 pb-3">
+              <button
+                onClick={addCustomRow}
+                className="mt-2 text-xs text-gray-400 hover:text-gray-700 transition-colors"
+              >
+                + Add row
+              </button>
+            </div>
+          </div>
 
-        {/* Add row */}
-        <button
-          onClick={addCustomRow}
-          className="mt-2.5 text-xs text-gray-400 hover:text-gray-700 transition-colors"
-        >
-          + Add row
-        </button>
+          {/* Right: Notes */}
+          <div className="w-56 flex-shrink-0">
+            <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              Notes
+            </p>
+            <textarea
+              value={notes}
+              onChange={(e) => {
+                const lines = e.target.value.split('\n');
+                if (lines.length <= 3) setNotes(e.target.value);
+              }}
+              placeholder="Add notes…"
+              rows={3}
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
+            />
+          </div>
 
-        {/* ── Notes section ── */}
-        <div className="mt-3">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
-            Notes
-          </p>
-          <textarea
-            value={notes}
-            onChange={(e) => {
-              // Allow max 3 lines
-              const lines = e.target.value.split('\n');
-              if (lines.length <= 3) setNotes(e.target.value);
-            }}
-            placeholder="Add notes…"
-            rows={3}
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
-          />
         </div>
 
       </div>
