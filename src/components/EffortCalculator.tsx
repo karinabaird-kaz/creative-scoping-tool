@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import * as XLSX from 'xlsx';
 import { DEFAULT_RATE, DISCIPLINES } from '../data/effortCalculatorData';
 import { Logo } from './Logo';
 
@@ -94,9 +95,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalHrs = rows.reduce((s, r) => s + getHoursTotal(r), 0);
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
-  async function exportXLSX() {
-    const { utils, writeFile } = await import('xlsx');
-
+  function exportXLSX() {
     const headers = [
       'Discipline',
       'Round 1',
@@ -133,7 +132,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       Math.round(totalCost),
     ];
 
-    const ws = utils.aoa_to_sheet([headers, ...data, summary]);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...data, summary]);
 
     // Column widths
     ws['!cols'] = [
@@ -148,9 +147,9 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       { wch: 12 },
     ];
 
-    const wb = utils.book_new();
-    utils.book_append_sheet(wb, ws, 'Effort Calculator');
-    writeFile(wb, 'Effort Calculator.xlsx');
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Effort Calculator');
+    XLSX.writeFile(wb, 'Effort Calculator.xlsx');
   }
 
   const colHdr = 'py-2.5 px-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
@@ -234,7 +233,6 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             <tbody>
               {rows.map((row) => {
                 const hrs = getHoursTotal(row);
-                const rate = getEffectiveRate(row, globalRate);
                 const cost = getCost(row, globalRate);
                 const isOverridden = row.rateOverride !== null;
 
