@@ -1,5 +1,7 @@
+import { useState } from 'react';
 import type { Package } from '../data/scopingData';
 import { Logo } from './Logo';
+import { EffortCalculator } from './EffortCalculator';
 
 interface LandingProps {
   packages: Package[];
@@ -54,6 +56,16 @@ function calcPackageRange(pkg: Package) {
 export function Landing({ packages, onSelect }: LandingProps) {
   const strategyPkgs = packages.filter((p) => p.phaseGroup === 'strategy');
   const campaignPkgs = packages.filter((p) => p.phaseGroup === 'campaign');
+  const [showEffortCalc, setShowEffortCalc] = useState(false);
+
+  if (showEffortCalc) {
+    return (
+      <EffortCalculator
+        onBack={() => setShowEffortCalc(false)}
+        onHome={() => setShowEffortCalc(false)}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center px-8 py-4">
@@ -78,18 +90,15 @@ export function Landing({ packages, onSelect }: LandingProps) {
             <div className="grid grid-cols-4 gap-3">
               {/* Col 1 — Misc */}
               <div className="flex flex-col">
-                <div className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col relative overflow-hidden">
+                <button
+                  onClick={() => setShowEffortCalc(true)}
+                  className="flex-1 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200 relative overflow-hidden"
+                >
                   <h2 className="text-white text-[16px] font-semibold leading-snug">
                     Effort Calculator
                   </h2>
                   <div className="flex-1" />
-                  {/* To be built banner */}
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <p className="text-white/20 text-[13px] font-semibold tracking-widest uppercase rotate-[-20deg] border border-white/10 px-4 py-1.5 rounded-full">
-                      To be built
-                    </p>
-                  </div>
-                </div>
+                </button>
               </div>
 
               {/* Col 2 — empty */}
