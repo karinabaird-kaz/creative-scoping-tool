@@ -344,7 +344,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R4</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R5</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Meetings</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px', fontWeight: 900 }}>Contingency</th>
+                    <th className="py-2 px-1.5 text-[11px] font-black text-black uppercase tracking-wider text-center" style={{ width: '68px' }}>Contingency</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Hrs Total</th>
                     <th className={`${colHdr} text-center`} style={{ width: '68px' }}>$ / hr</th>
                     <th className={`${colHdr} text-right pr-0`} style={{ width: '68px' }}>Cost</th>
