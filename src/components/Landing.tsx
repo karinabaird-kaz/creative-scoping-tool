@@ -85,26 +85,29 @@ export function Landing({ packages, onSelect }: LandingProps) {
         </div>
 
         <div className="flex-1 space-y-8">
-          {/* Top row: Effort Calculator (cols 1-2) + Campaign (col 3), col 4 empty */}
+          {/* Top row: Effort Calculator (cols 1-2) + Campaign (cols 3-4) — equal 50/50 split */}
           {campaignPkgs.length > 0 && (
-            <div className="grid grid-cols-4 gap-3 items-start">
-              {/* Cols 1-2 — Effort Calculator (spans 2 columns, natural height) */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* Left — Effort Calculator */}
               <button
                 onClick={() => setShowEffortCalc(true)}
-                className="col-span-2 bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200"
+                className="bg-[#141414] border border-white/10 rounded-xl p-5 flex flex-col text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200"
               >
+                <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
+                  Misc
+                </p>
                 <h2 className="text-white text-[16px] font-semibold leading-snug mb-3">
                   Effort Calculator
                 </h2>
-                <div className="space-y-1.5">
+                <div className="space-y-1.5 mb-auto">
                   <p className="text-white/50 text-[12px] leading-snug">Upload client brief for proposal language.</p>
                   <p className="text-white/50 text-[12px] leading-snug">Calculate project hours and costs across disciplines.</p>
                   <p className="text-white/50 text-[12px] leading-snug">Build estimates from scratch, adjust rates, export to CSV.</p>
                 </div>
               </button>
 
-              {/* Col 3 — Campaign */}
-              <div className="flex flex-col">
+              {/* Right — Campaign (spans remaining half) */}
+              <div>
                 {campaignPkgs.map((pkg) => {
                   const { hrsLow, hrsHigh, feeLow, feeHigh } = calcPackageRange(pkg);
                   return (
@@ -121,9 +124,6 @@ export function Landing({ packages, onSelect }: LandingProps) {
                   );
                 })}
               </div>
-
-              {/* Col 4 — empty */}
-              <div />
             </div>
           )}
 
@@ -169,7 +169,7 @@ function PackageCard({ pkg, hrsLow, hrsHigh, feeLow, feeHigh, onSelect, feeNote 
   return (
     <button
       onClick={() => onSelect(pkg)}
-      className="bg-[#141414] border border-white/10 rounded-xl p-5 text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200 flex flex-col"
+      className="w-full h-full bg-[#141414] border border-white/10 rounded-xl p-5 text-left hover:border-[#fff230]/50 hover:bg-[#1a1a14] transition-all duration-200 flex flex-col"
     >
       <p className="text-white/40 text-[10px] tracking-widest uppercase mb-2 font-semibold">
         {pkg.label}
