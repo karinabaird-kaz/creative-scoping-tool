@@ -4,7 +4,6 @@ export const DISCIPLINES: string[] = [
   'Group Account Director',
   'Account Director',
   'Account Manager',
-  'Account Executive',
   'Strategy Director',
   'Creative Director',
   'Copywriting',

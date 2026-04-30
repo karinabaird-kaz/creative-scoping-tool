@@ -9,6 +9,8 @@ interface Row {
   r1: number;
   r2: number;
   r3: number;
+  r4: number;
+  r5: number;
   meetings: number;
   contingency: number;
   rateOverride: number | null;
@@ -25,22 +27,23 @@ function newId() {
 }
 
 function makeRow(name: string, isCustom = false): Row {
-  return { id: newId(), name, isCustom, r1: 0, r2: 0, r3: 0, meetings: 0, contingency: 0, rateOverride: null };
+  return {
+    id: newId(), name, isCustom,
+    r1: 0, r2: 0, r3: 0, r4: 0, r5: 0,
+    meetings: 0, contingency: 0,
+    rateOverride: null,
+  };
 }
 
 function makeRows(): Row[] {
-  return [
-    ...DISCIPLINES.map((name) => makeRow(name, false)),
-    makeRow('', true),
-    makeRow('', true),
-  ];
+  return DISCIPLINES.map((name) => makeRow(name, false));
 }
 
-const HRS_FIELDS = ['r1', 'r2', 'r3', 'meetings', 'contingency'] as const;
+const HRS_FIELDS = ['r1', 'r2', 'r3', 'r4', 'r5', 'meetings', 'contingency'] as const;
 type HrsField = (typeof HRS_FIELDS)[number];
 
 function getHoursTotal(row: Row): number {
-  return row.r1 + row.r2 + row.r3 + row.meetings + row.contingency;
+  return row.r1 + row.r2 + row.r3 + row.r4 + row.r5 + row.meetings + row.contingency;
 }
 
 function getEffectiveRate(row: Row, globalRate: number): number {
@@ -64,7 +67,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [globalRate, setGlobalRate] = useState(DEFAULT_RATE);
   const [projectName, setProjectName] = useState('');
   const [scopeText, setScopeText] = useState('');
-  const [notes, setNotes] = useState(['', '', '']);
+  const [notes, setNotes] = useState('');
 
   function updateHours(id: string, field: HrsField, raw: string) {
     const value = raw === '' ? 0 : parseFloat(raw);
@@ -98,22 +101,20 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     setRows((prev) => [...prev, makeRow('', true)]);
   }
 
-  function updateNote(i: number, val: string) {
-    setNotes((prev) => prev.map((n, idx) => (idx === i ? val : n)));
-  }
-
   function reset() {
     setRows(makeRows());
     setGlobalRate(DEFAULT_RATE);
     setProjectName('');
     setScopeText('');
-    setNotes(['', '', '']);
+    setNotes('');
   }
 
   // Totals
   const totalR1 = rows.reduce((s, r) => s + r.r1, 0);
   const totalR2 = rows.reduce((s, r) => s + r.r2, 0);
   const totalR3 = rows.reduce((s, r) => s + r.r3, 0);
+  const totalR4 = rows.reduce((s, r) => s + r.r4, 0);
+  const totalR5 = rows.reduce((s, r) => s + r.r5, 0);
   const totalMeetings = rows.reduce((s, r) => s + r.meetings, 0);
   const totalContingency = rows.reduce((s, r) => s + r.contingency, 0);
   const totalHrs = rows.reduce((s, r) => s + getHoursTotal(r), 0);
@@ -126,13 +127,13 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     if (meta.length) meta.push(['']);
 
     const headers = [
-      'Discipline', 'Round 1', 'Round 2', 'Round 3',
+      'Discipline', 'Round 1', 'Round 2', 'Round 3', 'Round 4', 'Round 5',
       'Meetings / Admin', 'Contingency', 'Hours Total', '$ per Hour', 'Cost ($)',
     ];
 
     const dataRows = rows.map((r) => [
       r.name,
-      r.r1, r.r2, r.r3,
+      r.r1, r.r2, r.r3, r.r4, r.r5,
       r.meetings, r.contingency,
       getHoursTotal(r),
       getEffectiveRate(r, globalRate),
@@ -140,16 +141,15 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     ]);
 
     const summary = [
-      'TOTAL', totalR1, totalR2, totalR3, totalMeetings,
-      totalContingency, totalHrs, '', Math.round(totalCost),
+      'TOTAL', totalR1, totalR2, totalR3, totalR4, totalR5,
+      totalMeetings, totalContingency, totalHrs, '', Math.round(totalCost),
     ];
 
     const noteRows: (string | number)[][] = [];
-    const filledNotes = notes.filter((n) => n.trim());
-    if (filledNotes.length) {
+    if (notes.trim()) {
       noteRows.push(['']);
       noteRows.push(['Notes']);
-      filledNotes.forEach((n) => noteRows.push([n]));
+      notes.split('\n').forEach((line) => noteRows.push([line]));
     }
 
     const allRows = [...meta, headers, ...dataRows, summary, ...noteRows];
@@ -169,13 +169,12 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     URL.revokeObjectURL(url);
   }
 
-  const colHdr = 'py-2.5 px-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
-  const inputBase = 'w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300';
+  const colHdr = 'py-2 px-1.5 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
 
   return (
     <div className="min-h-screen bg-white">
       {/* Top bar */}
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-8 py-3 flex items-center justify-between">
+      <div className="sticky top-0 z-10 bg-white border-b border-gray-100 px-6 py-2.5 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Logo className="h-5 w-auto brightness-0" onClick={onHome} />
           <span className="text-gray-200 text-lg">|</span>
@@ -209,38 +208,43 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </div>
       </div>
 
-      <div className="px-8 py-5 max-w-6xl">
+      <div className="px-6 py-4">
 
-        {/* ── Project / scope section ── */}
-        <div className="mb-5 grid grid-cols-3 gap-4">
-          <div>
+        {/* ── Project name + scope ── */}
+        <div className="flex items-start gap-4 mb-4">
+          {/* Client / Project name — compact, same width as global rate area */}
+          <div className="flex-shrink-0">
             <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
               Client / Project Name
             </label>
-            <input
-              type="text"
-              value={projectName}
-              onChange={(e) => setProjectName(e.target.value)}
-              placeholder="e.g. Acme Co — Brand Campaign 2026"
-              className={inputBase}
-            />
+            <div className="flex items-center border border-gray-200 rounded-lg px-2.5 py-1.5">
+              <input
+                type="text"
+                value={projectName}
+                onChange={(e) => setProjectName(e.target.value)}
+                placeholder="Client — Project"
+                className="w-44 text-[13px] text-black focus:outline-none placeholder-gray-300"
+              />
+            </div>
           </div>
-          <div className="col-span-2">
+
+          {/* Scope / Description — grows, 10-line textarea */}
+          <div className="flex-1">
             <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
               Scope / Description
             </label>
-            <input
-              type="text"
+            <textarea
               value={scopeText}
               onChange={(e) => setScopeText(e.target.value)}
               placeholder="Brief description of scope or assumptions…"
-              className={inputBase}
+              rows={10}
+              className="w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
             />
           </div>
         </div>
 
         {/* ── Global rate ── */}
-        <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
+        <div className="flex items-center gap-3 mb-4 pb-4 border-b border-gray-100">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
             Global rate
           </span>
@@ -255,26 +259,25 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             />
             <span className="text-xs text-gray-400">/hr</span>
           </div>
-          <span className="text-[11px] text-gray-400">
-            Default for all rows — edit any $/hr cell to override individually
-          </span>
         </div>
 
         {/* ── Table ── */}
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[12px]" style={{ minWidth: '900px' }}>
+          <table className="w-full border-collapse text-[12px]" style={{ minWidth: '1060px' }}>
             <thead>
               <tr className="border-b-2 border-gray-100">
-                <th className={`${colHdr} text-left pl-0 w-44`}>Discipline</th>
-                <th className={`${colHdr} text-center w-16`}>Round 1</th>
-                <th className={`${colHdr} text-center w-16`}>Round 2</th>
-                <th className={`${colHdr} text-center w-16`}>Round 3</th>
-                <th className={`${colHdr} text-center w-24`}>Meetings / Admin</th>
-                <th className={`${colHdr} text-center w-20`}>Contingency</th>
-                <th className={`${colHdr} text-center w-16`}>Hrs Total</th>
-                <th className={`${colHdr} text-center w-24`}>$ / hr</th>
-                <th className={`${colHdr} text-right w-24 pr-0`}>Cost</th>
-                <th className="w-6" />
+                <th className={`${colHdr} text-left pl-0 w-36`}>Discipline</th>
+                <th className={`${colHdr} text-center w-14`}>Round 1</th>
+                <th className={`${colHdr} text-center w-14`}>Round 2</th>
+                <th className={`${colHdr} text-center w-14`}>Round 3</th>
+                <th className={`${colHdr} text-center w-14`}>Round 4</th>
+                <th className={`${colHdr} text-center w-14`}>Round 5</th>
+                <th className={`${colHdr} text-center w-20`}>Meetings / Admin</th>
+                <th className={`${colHdr} text-center w-18`}>Contingency</th>
+                <th className={`${colHdr} text-center w-14`}>Hrs Total</th>
+                <th className={`${colHdr} text-center w-20`}>$ / hr</th>
+                <th className={`${colHdr} text-right w-20 pr-0`}>Cost</th>
+                <th className="w-5" />
               </tr>
             </thead>
 
@@ -287,12 +290,12 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 return (
                   <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
                     {/* Discipline name */}
-                    <td className="py-1.5 pr-3 pl-0">
+                    <td className="py-1 pr-2 pl-0">
                       {row.isCustom ? (
                         <input
                           type="text"
                           value={row.name}
-                          placeholder="Custom discipline…"
+                          placeholder="Custom…"
                           onChange={(e) => updateRowName(row.id, e.target.value)}
                           className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
                         />
@@ -303,7 +306,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
                     {/* Hour inputs */}
                     {HRS_FIELDS.map((field) => (
-                      <td key={field} className="py-1.5 px-1.5 text-center">
+                      <td key={field} className="py-1 px-1 text-center">
                         <input
                           type="number"
                           min={0}
@@ -317,24 +320,20 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     ))}
 
                     {/* Hours total */}
-                    <td className="py-1.5 px-1.5 text-center font-semibold text-black">
+                    <td className="py-1 px-1 text-center font-semibold text-black">
                       {hrs > 0 ? hrs : <span className="text-gray-300">—</span>}
                     </td>
 
                     {/* Rate */}
-                    <td className="py-1.5 px-1.5 text-center">
-                      <div
-                        className={`flex items-center gap-0.5 border rounded-md px-1.5 py-0.5 transition-colors ${
-                          isOverridden ? 'border-[#d4b800] bg-[#fffde7]' : 'border-gray-200'
-                        }`}
-                      >
+                    <td className="py-1 px-1 text-center">
+                      <div className="flex items-center gap-0.5 border border-gray-200 rounded-md px-1.5 py-0.5">
                         <span className="text-[10px] text-gray-400">$</span>
                         <input
                           type="number"
                           min={0}
                           value={isOverridden ? String(row.rateOverride) : String(globalRate)}
                           onChange={(e) => updateRateOverride(row.id, e.target.value)}
-                          className="w-14 text-center text-black bg-transparent focus:outline-none text-[12px]"
+                          className="w-12 text-center text-black bg-transparent focus:outline-none text-[12px]"
                         />
                       </div>
                       {isOverridden && (
@@ -348,12 +347,12 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     </td>
 
                     {/* Cost */}
-                    <td className="py-1.5 pl-3 text-right font-semibold text-black pr-0">
+                    <td className="py-1 pl-2 text-right font-semibold text-black pr-0">
                       {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
                     </td>
 
                     {/* Remove */}
-                    <td className="py-1.5 pl-2 pr-0">
+                    <td className="py-1 pl-1.5 pr-0">
                       <button
                         onClick={() => removeRow(row.id)}
                         title="Remove row"
@@ -369,19 +368,19 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
             <tfoot>
               <tr className="border-t-2 border-gray-200 bg-gray-50">
-                <td className="py-2.5 pr-3 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
+                <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
                   Total
                 </td>
-                {[totalR1, totalR2, totalR3, totalMeetings, totalContingency].map((v, i) => (
-                  <td key={i} className="py-2.5 px-1.5 text-center font-semibold text-black">
+                {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
+                  <td key={i} className="py-2 px-1 text-center font-semibold text-black">
                     {v > 0 ? v : <span className="text-gray-300">—</span>}
                   </td>
                 ))}
-                <td className="py-2.5 px-1.5 text-center font-bold text-black">
+                <td className="py-2 px-1 text-center font-bold text-black">
                   {totalHrs > 0 ? totalHrs : <span className="text-gray-300">—</span>}
                 </td>
-                <td className="py-2.5 px-1.5" />
-                <td className="py-2.5 pl-3 text-right font-bold text-black text-[14px] pr-0">
+                <td className="py-2 px-1" />
+                <td className="py-2 pl-2 text-right font-bold text-black text-[13px] pr-0">
                   {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
                 </td>
                 <td />
@@ -393,28 +392,27 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         {/* Add row */}
         <button
           onClick={addCustomRow}
-          className="mt-3 text-xs text-gray-400 hover:text-gray-700 transition-colors"
+          className="mt-2.5 text-xs text-gray-400 hover:text-gray-700 transition-colors"
         >
           + Add row
         </button>
 
         {/* ── Notes section ── */}
-        <div className="mt-8 pt-6 border-t border-gray-100">
-          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3">
+        <div className="mt-6 pt-5 border-t border-gray-100">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">
             Notes
           </p>
-          <div className="space-y-2">
-            {notes.map((note, i) => (
-              <input
-                key={i}
-                type="text"
-                value={note}
-                onChange={(e) => updateNote(i, e.target.value)}
-                placeholder={`Note ${i + 1}…`}
-                className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300"
-              />
-            ))}
-          </div>
+          <textarea
+            value={notes}
+            onChange={(e) => {
+              // Allow max 3 lines
+              const lines = e.target.value.split('\n');
+              if (lines.length <= 3) setNotes(e.target.value);
+            }}
+            placeholder="Add notes here (up to 3 lines)…"
+            rows={3}
+            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
+          />
         </div>
 
       </div>
