@@ -11,4 +11,5 @@ export const DISCIPLINES: string[] = [
   'Art Direction',
   'Designer',
   'Finished Artist',
+  'Motion',
 ];

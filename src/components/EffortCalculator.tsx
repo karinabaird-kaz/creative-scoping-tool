@@ -5,6 +5,7 @@ import { Logo } from './Logo';
 interface Row {
   id: string;
   name: string;
+  isCustom: boolean;
   r1: number;
   r2: number;
   r3: number;
@@ -18,17 +19,21 @@ interface EffortCalculatorProps {
   onHome: () => void;
 }
 
+let rowCounter = 0;
+function newId() {
+  return `row-${++rowCounter}`;
+}
+
+function makeRow(name: string, isCustom = false): Row {
+  return { id: newId(), name, isCustom, r1: 0, r2: 0, r3: 0, meetings: 0, contingency: 0, rateOverride: null };
+}
+
 function makeRows(): Row[] {
-  return DISCIPLINES.map((name, i) => ({
-    id: `row-${i}`,
-    name,
-    r1: 0,
-    r2: 0,
-    r3: 0,
-    meetings: 0,
-    contingency: 0,
-    rateOverride: null,
-  }));
+  return [
+    ...DISCIPLINES.map((name) => makeRow(name, false)),
+    makeRow('', true),
+    makeRow('', true),
+  ];
 }
 
 const HRS_FIELDS = ['r1', 'r2', 'r3', 'meetings', 'contingency'] as const;
@@ -57,6 +62,9 @@ function numDisplay(n: number): string {
 export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [rows, setRows] = useState<Row[]>(makeRows);
   const [globalRate, setGlobalRate] = useState(DEFAULT_RATE);
+  const [projectName, setProjectName] = useState('');
+  const [scopeText, setScopeText] = useState('');
+  const [notes, setNotes] = useState(['', '', '']);
 
   function updateHours(id: string, field: HrsField, raw: string) {
     const value = raw === '' ? 0 : parseFloat(raw);
@@ -75,14 +83,31 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   }
 
   function clearRateOverride(id: string) {
-    setRows((prev) =>
-      prev.map((r) => (r.id === id ? { ...r, rateOverride: null } : r))
-    );
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, rateOverride: null } : r)));
+  }
+
+  function updateRowName(id: string, name: string) {
+    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, name } : r)));
+  }
+
+  function removeRow(id: string) {
+    setRows((prev) => prev.filter((r) => r.id !== id));
+  }
+
+  function addCustomRow() {
+    setRows((prev) => [...prev, makeRow('', true)]);
+  }
+
+  function updateNote(i: number, val: string) {
+    setNotes((prev) => prev.map((n, idx) => (idx === i ? val : n)));
   }
 
   function reset() {
     setRows(makeRows());
     setGlobalRate(DEFAULT_RATE);
+    setProjectName('');
+    setScopeText('');
+    setNotes(['', '', '']);
   }
 
   // Totals
@@ -95,6 +120,11 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
   function exportCSV() {
+    const meta: (string | number)[][] = [];
+    if (projectName) meta.push([`Client / Project: ${projectName}`]);
+    if (scopeText) meta.push([scopeText]);
+    if (meta.length) meta.push(['']);
+
     const headers = [
       'Discipline', 'Round 1', 'Round 2', 'Round 3',
       'Meetings / Admin', 'Contingency', 'Hours Total', '$ per Hour', 'Cost ($)',
@@ -102,11 +132,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
     const dataRows = rows.map((r) => [
       r.name,
-      r.r1,
-      r.r2,
-      r.r3,
-      r.meetings,
-      r.contingency,
+      r.r1, r.r2, r.r3,
+      r.meetings, r.contingency,
       getHoursTotal(r),
       getEffectiveRate(r, globalRate),
       Math.round(getCost(r, globalRate)),
@@ -117,15 +144,25 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       totalContingency, totalHrs, '', Math.round(totalCost),
     ];
 
-    const csv = [headers, ...dataRows, summary]
-      .map((row) => row.map((cell) => `"${cell}"`).join(','))
+    const noteRows: (string | number)[][] = [];
+    const filledNotes = notes.filter((n) => n.trim());
+    if (filledNotes.length) {
+      noteRows.push(['']);
+      noteRows.push(['Notes']);
+      filledNotes.forEach((n) => noteRows.push([n]));
+    }
+
+    const allRows = [...meta, headers, ...dataRows, summary, ...noteRows];
+    const csv = allRows
+      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
       .join('\n');
 
+    const filename = projectName ? `${projectName} - Effort Calculator.csv` : 'Effort Calculator.csv';
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'Effort Calculator.csv';
+    a.download = filename;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -133,6 +170,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   }
 
   const colHdr = 'py-2.5 px-2 text-[10px] font-semibold text-gray-500 uppercase tracking-wider';
+  const inputBase = 'w-full border border-gray-200 rounded-lg px-2.5 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300';
 
   return (
     <div className="min-h-screen bg-white">
@@ -171,9 +209,38 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </div>
       </div>
 
-      <div className="px-8 py-5">
-        {/* Global rate */}
-        <div className="flex items-center gap-3 mb-6">
+      <div className="px-8 py-5 max-w-6xl">
+
+        {/* ── Project / scope section ── */}
+        <div className="mb-5 grid grid-cols-3 gap-4">
+          <div>
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              Client / Project Name
+            </label>
+            <input
+              type="text"
+              value={projectName}
+              onChange={(e) => setProjectName(e.target.value)}
+              placeholder="e.g. Acme Co — Brand Campaign 2026"
+              className={inputBase}
+            />
+          </div>
+          <div className="col-span-2">
+            <label className="block text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
+              Scope / Description
+            </label>
+            <input
+              type="text"
+              value={scopeText}
+              onChange={(e) => setScopeText(e.target.value)}
+              placeholder="Brief description of scope or assumptions…"
+              className={inputBase}
+            />
+          </div>
+        </div>
+
+        {/* ── Global rate ── */}
+        <div className="flex items-center gap-3 mb-6 pb-5 border-b border-gray-100">
           <span className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
             Global rate
           </span>
@@ -189,13 +256,13 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             <span className="text-xs text-gray-400">/hr</span>
           </div>
           <span className="text-[11px] text-gray-400">
-            Applies to all rows — override individually per discipline
+            Default for all rows — edit any $/hr cell to override individually
           </span>
         </div>
 
-        {/* Table */}
+        {/* ── Table ── */}
         <div className="overflow-x-auto">
-          <table className="w-full border-collapse text-[12px]" style={{ minWidth: '860px' }}>
+          <table className="w-full border-collapse text-[12px]" style={{ minWidth: '900px' }}>
             <thead>
               <tr className="border-b-2 border-gray-100">
                 <th className={`${colHdr} text-left pl-0 w-44`}>Discipline</th>
@@ -207,6 +274,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 <th className={`${colHdr} text-center w-16`}>Hrs Total</th>
                 <th className={`${colHdr} text-center w-24`}>$ / hr</th>
                 <th className={`${colHdr} text-right w-24 pr-0`}>Cost</th>
+                <th className="w-6" />
               </tr>
             </thead>
 
@@ -219,8 +287,18 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 return (
                   <tr key={row.id} className="border-b border-gray-50 hover:bg-gray-50/60 group">
                     {/* Discipline name */}
-                    <td className="py-1.5 pr-3 font-medium text-black whitespace-nowrap pl-0">
-                      {row.name}
+                    <td className="py-1.5 pr-3 pl-0">
+                      {row.isCustom ? (
+                        <input
+                          type="text"
+                          value={row.name}
+                          placeholder="Custom discipline…"
+                          onChange={(e) => updateRowName(row.id, e.target.value)}
+                          className="w-full border border-transparent focus:border-gray-300 rounded-md px-1.5 py-0.5 text-black focus:outline-none text-[12px] placeholder-gray-300 bg-transparent"
+                        />
+                      ) : (
+                        <span className="font-medium text-black whitespace-nowrap">{row.name}</span>
+                      )}
                     </td>
 
                     {/* Hour inputs */}
@@ -247,9 +325,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <td className="py-1.5 px-1.5 text-center">
                       <div
                         className={`flex items-center gap-0.5 border rounded-md px-1.5 py-0.5 transition-colors ${
-                          isOverridden
-                            ? 'border-[#d4b800] bg-[#fffde7]'
-                            : 'border-transparent group-hover:border-gray-200'
+                          isOverridden ? 'border-[#d4b800] bg-[#fffde7]' : 'border-gray-200'
                         }`}
                       >
                         <span className="text-[10px] text-gray-400">$</span>
@@ -273,11 +349,18 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
                     {/* Cost */}
                     <td className="py-1.5 pl-3 text-right font-semibold text-black pr-0">
-                      {cost > 0 ? (
-                        fmt(cost)
-                      ) : (
-                        <span className="text-gray-300">—</span>
-                      )}
+                      {cost > 0 ? fmt(cost) : <span className="text-gray-300">—</span>}
+                    </td>
+
+                    {/* Remove */}
+                    <td className="py-1.5 pl-2 pr-0">
+                      <button
+                        onClick={() => removeRow(row.id)}
+                        title="Remove row"
+                        className="opacity-0 group-hover:opacity-100 text-gray-300 hover:text-red-400 transition-all leading-none text-sm"
+                      >
+                        ✕
+                      </button>
                     </td>
                   </tr>
                 );
@@ -301,10 +384,39 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 <td className="py-2.5 pl-3 text-right font-bold text-black text-[14px] pr-0">
                   {totalCost > 0 ? fmt(totalCost) : <span className="text-gray-300">—</span>}
                 </td>
+                <td />
               </tr>
             </tfoot>
           </table>
         </div>
+
+        {/* Add row */}
+        <button
+          onClick={addCustomRow}
+          className="mt-3 text-xs text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          + Add row
+        </button>
+
+        {/* ── Notes section ── */}
+        <div className="mt-8 pt-6 border-t border-gray-100">
+          <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-3">
+            Notes
+          </p>
+          <div className="space-y-2">
+            {notes.map((note, i) => (
+              <input
+                key={i}
+                type="text"
+                value={note}
+                onChange={(e) => updateNote(i, e.target.value)}
+                placeholder={`Note ${i + 1}…`}
+                className="w-full border border-gray-200 rounded-lg px-3 py-1.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300"
+              />
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
   );
