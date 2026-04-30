@@ -87,10 +87,6 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     );
   }
 
-  function clearRateOverride(id: string) {
-    setRows((prev) => prev.map((r) => (r.id === id ? { ...r, rateOverride: null } : r)));
-  }
-
   function updateRowName(id: string, name: string) {
     setRows((prev) => prev.map((r) => (r.id === id ? { ...r, name } : r)));
   }
@@ -169,7 +165,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     const headerRow: Cell[] = [
       { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
       hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'),
-      hdr('Meetings / Admin'), hdr('Contingency'),
+      hdr('Meetings'), hdr('Contingency'),
       hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
     ];
 
@@ -337,21 +333,22 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
-              <table className="border-collapse text-[12px] table-fixed" style={{ width: '775px' }}>
+              {/* 150 + 9×68 + 18 = 780px */}
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '780px' }}>
                 <thead>
                   <tr className="border-b-2 border-gray-100">
-                    <th className={`${colHdr} text-left pl-0`} style={{ width: '140px' }}>Service</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R1</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R2</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R3</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R4</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '50px' }}>R5</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '65px' }}>Meetings</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '100px', fontWeight: 900, fontSize: '11px' }}>Contingency</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '60px' }}>Hrs Total</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
-                    <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
-                    <th style={{ width: '20px' }} />
+                    <th className={`${colHdr} text-left pl-0`} style={{ width: '150px' }}>Service</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R1</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R2</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R3</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R4</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R5</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Meetings</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px', fontWeight: 900 }}>Contingency</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Hrs Total</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>$ / hr</th>
+                    <th className={`${colHdr} text-right pr-0`} style={{ width: '68px' }}>Cost</th>
+                    <th style={{ width: '18px' }} />
                   </tr>
                 </thead>
 
@@ -406,14 +403,6 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                               className="w-10 text-center text-black bg-transparent focus:outline-none text-[12px]"
                             />
                           </div>
-                          {isOverridden && (
-                            <button
-                              onClick={() => clearRateOverride(row.id)}
-                              className="text-[9px] text-gray-400 hover:text-red-400 transition-colors mt-0.5 block mx-auto"
-                            >
-                              reset
-                            </button>
-                          )}
                         </td>
 
                         <td className="py-1 pl-1 text-right font-semibold text-black pr-0">
