@@ -12,6 +12,7 @@ interface Row {
   r3: number;
   r4: number;
   r5: number;
+  r6: number;
   meetings: number;
   contingency: number;
   rateOverride: number | null;
@@ -30,7 +31,7 @@ function newId() {
 function makeRow(name: string, isCustom = false): Row {
   return {
     id: newId(), name, isCustom,
-    r1: 0, r2: 0, r3: 0, r4: 0, r5: 0,
+    r1: 0, r2: 0, r3: 0, r4: 0, r5: 0, r6: 0,
     meetings: 0, contingency: 0,
     rateOverride: null,
   };
@@ -40,11 +41,11 @@ function makeRows(): Row[] {
   return DISCIPLINES.map((name) => makeRow(name, false));
 }
 
-const HRS_FIELDS = ['r1', 'r2', 'r3', 'r4', 'r5', 'meetings', 'contingency'] as const;
+const HRS_FIELDS = ['r1', 'r2', 'r3', 'r4', 'r5', 'r6', 'meetings', 'contingency'] as const;
 type HrsField = (typeof HRS_FIELDS)[number];
 
 function getHoursTotal(row: Row): number {
-  return row.r1 + row.r2 + row.r3 + row.r4 + row.r5 + row.meetings + row.contingency;
+  return row.r1 + row.r2 + row.r3 + row.r4 + row.r5 + row.r6 + row.meetings + row.contingency;
 }
 
 function getEffectiveRate(row: Row, globalRate: number): number {
@@ -114,13 +115,14 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalR3 = rows.reduce((s, r) => s + r.r3, 0);
   const totalR4 = rows.reduce((s, r) => s + r.r4, 0);
   const totalR5 = rows.reduce((s, r) => s + r.r5, 0);
+  const totalR6 = rows.reduce((s, r) => s + r.r6, 0);
   const totalMeetings = rows.reduce((s, r) => s + r.meetings, 0);
   const totalContingency = rows.reduce((s, r) => s + r.contingency, 0);
   const totalHrs = rows.reduce((s, r) => s + getHoursTotal(r), 0);
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
   async function exportXLSX() {
-    const NUM_COLS = 11;
+    const NUM_COLS = 12;
     const filename = [clientName, projectName].filter(Boolean).join(' ')
       ? `${[clientName, projectName].filter(Boolean).join(' ')} - Effort Calculator`
       : 'Effort Calculator';
@@ -164,7 +166,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     // ── Headers ──
     const headerRow: Cell[] = [
       { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
-      hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'),
+      hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'), hdr('Round 6'),
       hdr('Meetings'), hdr('FAT'),
       hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
     ];
@@ -175,7 +177,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       const rate = getEffectiveRate(r, globalRate);
       return [
         { value: r.name, type: String, align: 'left', fontSize: 10 },
-        c(r.r1), c(r.r2), c(r.r3), c(r.r4), c(r.r5),
+        c(r.r1), c(r.r2), c(r.r3), c(r.r4), c(r.r5), c(r.r6),
         c(r.meetings), c(r.contingency),
         c(hrs), c(rate),
         c(hrs * rate, false, '$#,##0.00'),
@@ -186,7 +188,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     const totalRow: Cell[] = [
       { value: 'TOTAL', fontWeight: 'bold', align: 'left', fontSize: 10 },
       c(totalR1, true), c(totalR2, true), c(totalR3, true),
-      c(totalR4, true), c(totalR5, true),
+      c(totalR4, true), c(totalR5, true), c(totalR6, true),
       c(totalMeetings, true), c(totalContingency, true),
       c(totalHrs, true),
       { value: null },
@@ -197,8 +199,8 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     const sheetOptions = {
       columns: [
         { width: 24 }, { width: 10 }, { width: 10 }, { width: 10 },
-        { width: 10 }, { width: 10 }, { width: 17 }, { width: 14 },
-        { width: 13 }, { width: 12 }, { width: 13 },
+        { width: 10 }, { width: 10 }, { width: 10 }, { width: 14 },
+        { width: 10 }, { width: 13 }, { width: 12 }, { width: 13 },
       ],
     };
 
@@ -333,21 +335,22 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
           <label className={sectionLabel}>Effort Calculator</label>
           <div className="bg-white border border-white/20 rounded-xl overflow-hidden">
             <div className="overflow-x-auto px-4 pt-3">
-              {/* 150 + 8×68 + 110 + 18 = 822px */}
-              <table className="border-collapse text-[12px] table-fixed" style={{ width: '822px' }}>
+              {/* 150 + 9×56 + 90 + 70 + 70 + 18 = 902px */}
+              <table className="border-collapse text-[12px] table-fixed" style={{ width: '902px' }}>
                 <thead>
                   <tr className="border-b-2 border-gray-100">
                     <th className={`${colHdr} text-left pl-0`} style={{ width: '150px' }}>Service</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R1</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R2</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R3</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R4</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>R5</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Meetings</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '110px' }}>FAT</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>Hrs Total</th>
-                    <th className={`${colHdr} text-center`} style={{ width: '68px' }}>$ / hr</th>
-                    <th className={`${colHdr} text-right pr-0`} style={{ width: '68px' }}>Cost</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R1</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R2</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R3</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R4</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R5</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>R6</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>Meetings</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '56px' }}>FAT</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '70px' }}>Hrs Total</th>
+                    <th className={`${colHdr} text-center`} style={{ width: '70px' }}>$ / hr</th>
+                    <th className={`${colHdr} text-right pr-0`} style={{ width: '70px' }}>Cost</th>
                     <th style={{ width: '18px' }} />
                   </tr>
                 </thead>
@@ -428,7 +431,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                     <td className="py-2 pr-2 text-[10px] font-bold text-gray-600 uppercase tracking-wider pl-0">
                       Total
                     </td>
-                    {[totalR1, totalR2, totalR3, totalR4, totalR5, totalMeetings, totalContingency].map((v, i) => (
+                    {[totalR1, totalR2, totalR3, totalR4, totalR5, totalR6, totalMeetings, totalContingency].map((v, i) => (
                       <td key={i} className="py-2 px-1 text-center font-semibold text-black">
                         {v > 0 ? v : <span className="text-gray-300">—</span>}
                       </td>
