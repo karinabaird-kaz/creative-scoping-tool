@@ -4,38 +4,42 @@ interface ScopeGeneratorInput {
   projectName?: string;
 }
 
-const SCOPE_GENERATION_PROMPT = `You are an expert proposal writer for creative and strategy agencies. Your task is to convert project briefs, effort calculator data, or deliverable lists into professional, client-facing scope descriptions.
+const SCOPE_GENERATION_PROMPT = `You are a proposal writer for a creative and strategy agency. Convert the brief below into a concise, professional scope description for a client proposal.
 
-The scope description should use an outcomes and deliverables model, NOT a time-and-materials model. This means:
-- Never use "Round 1", "Round 2", "Round 3" language
-- Never mention hours, rates, or staff roles
-- Frame work as fixed deliverables within defined phases
-- Include refinement as part of the phase, not as a separate negotiable unit
+Tone and style:
+- Open with one plain sentence: "This estimate includes [what the work covers]."
+- Use short bullet points under each phase. Do not write in paragraphs.
+- Be specific about quantities, formats, and deliverables. Do not be vague.
+- Keep it tight. A client should be able to scan it in under a minute.
+- Use Australian English spelling.
+- Do not mention hours, rates, or staff roles.
+- Do not use em dashes.
 
-Structure the scope description with these sections (include only relevant sections):
+Structure (include only relevant phases):
 
-1. **Opening Summary**: One sentence explaining what the estimate covers in plain language
+This estimate includes [one sentence summary].
 
-2. **Phases** (use only the phases relevant to the work, in this order):
-   - Strategy Phase: Brand or campaign strategy development, including research, workshops, positioning, or audience definition
-   - Ideation Phase: Creative exploration and concept development. Include mention of how many directions/concepts will be presented and that one will be selected to move forward
-   - Development Phase: Refine and develop the selected direction to final presentation-ready or production-ready state
-   - Production Phase: Build, animation, editing, finishing, or adaptation into final deliverable formats
+Strategy
+- [bullet: what is being done, e.g. gap analysis, messaging matrix, workshop, positioning]
 
-3. **Deliverables**: A specific bulleted list of final outputs with formats, sizes, quantities, and file types where relevant. Be concrete.
+Creative Development
+- [bullet: what concepts/directions are being explored and how many]
+- [bullet: what is being refined and to what level]
 
-4. **Exclusions**: Plain bulleted list of what is NOT included (additional concepts beyond scope, amendments outside scope, stock imagery, etc.)
+Design / Production
+- [bullet: specific assets being produced, with quantities and formats]
 
-5. **Assumptions**: Plain bulleted list of what the estimate relies on being true (client will provide assets, decision-makers available for workshops, etc.)
+Deliverables
+- [bulleted list of final outputs with formats, sizes, quantities]
 
-Tone guidelines:
-- Direct and professional, not legalistic
-- Use Australian English spelling
-- Avoid em dashes; use simple punctuation
-- Assume the reader (client) is educated and commercially aware
-- Be specific about quantities and deliverables
+ESTIMATE DOES NOT INCLUDE:
+- Additional concepts beyond the above scope
+- Amendments or additions outside of the above scope
+- Purchase or usage of stock imagery/footage
+- Finished art or production outside of the above scope
 
-Now, based on the brief or information provided below, generate a complete scope description following this structure:
+ASSUMPTIONS:
+- Any supplied assets are provided with online usage rights
 
 ---
 
@@ -43,50 +47,40 @@ Now, based on the brief or information provided below, generate a complete scope
 
 ---
 
-Generate only the scope description text, with clear section headings. Do not include any metadata, explanations, or preamble. Start directly with the opening summary.`;
+Output only the scope description. No preamble, no metadata. Start with "This estimate includes".`;
 
-const DEMO_SCOPE = `This estimate covers the strategy, creative development, and production of a refreshed brand identity for ${'{CLIENT}'}${'{PROJECT}'}.
+const DEMO_SCOPE = `This estimate includes the strategy, creative development, and production of a refreshed brand identity for ${'{CLIENT}'}${'{PROJECT}'}.
 
-**Strategy Phase**
+Strategy
+- Brand discovery workshop with key stakeholders
+- Competitive landscape and market review
+- Brand positioning, purpose, values and customer value proposition
+- Tone of voice direction
 
-We will begin with a brand discovery process to establish a clear strategic foundation. This includes a stakeholder workshop, competitive landscape review, and audience definition. The output is a Brand Strategy document capturing positioning, personality, tone of voice, and key messaging principles that will guide all creative work.
+Creative Development
+- 3x visual identity directions presented, covering logo treatment, colour palette, typography and example applications
+- 1x selected direction refined to final presentation-ready state
 
-**Ideation Phase**
+Design / Production
+- Full logo suite finalised (horizontal, stacked, icon-only)
+- Colour, typography and graphic device system
+- Brand Guidelines document (up to 20 pages)
+- Master asset handover package
 
-Building on the approved strategy, our creative team will explore three distinct visual identity directions. Each direction will be presented as a cohesive concept, including logo treatment, colour palette, typography, and example applications. Following client feedback, one direction will be selected to carry forward into development.
+Deliverables
+- Logo suite: AI, EPS, SVG, PNG, JPG (print and screen)
+- Colour specifications: CMYK, RGB, HEX, Pantone
+- Brand Guidelines PDF
+- Organised master asset folder
 
-**Development Phase**
+ESTIMATE DOES NOT INCLUDE:
+- Additional concepts beyond the above scope
+- Amendments or additions outside of the above scope
+- Purchase or usage of stock imagery/footage
+- Finished art or production outside of the above scope
 
-The selected direction will be refined and extended into a complete brand identity system. This includes finalisation of the logo suite, colour system, typography hierarchy, and core brand elements. The phase concludes with a presentation of the full identity system ready for client sign-off.
-
-**Production Phase**
-
-Approved brand assets will be packaged and prepared for handover. All files will be supplied in both print-ready and screen formats, along with a Brand Guidelines document to ensure consistent application across all future touchpoints.
-
-**Deliverables**
-
-- Primary logo suite (horizontal, stacked, icon-only) in AI, EPS, SVG, PNG, and JPG formats
-- Colour palette specifications (CMYK, RGB, HEX, Pantone)
-- Typography hierarchy with licensed font recommendations
-- Core brand elements (patterns, textures, graphic devices as applicable)
-- Brand Guidelines document (PDF, minimum 20 pages)
-- Master asset folder with organised, production-ready files
-
-**Exclusions**
-
-- Photography, illustration, or stock imagery
-- Website design or development
-- Print production or supplier management
-- Signage, environmental, or packaging design
-- Social media template production
-- Any deliverables not listed above
-
-**Assumptions**
-
-- Client will provide existing brand assets, references, and relevant background materials at project kick-off
-- A single key decision-maker or small working group (maximum three people) will provide consolidated feedback at each review stage
-- Client feedback will be provided within five business days of each presentation
-- This estimate covers one selected creative direction through to completion; additional directions or significant scope changes will be quoted separately`;
+ASSUMPTIONS:
+- Any supplied assets are provided with online usage rights`;
 
 const isDemoMode = (key: string | undefined) =>
   !key || key === 'sk-ant-YOUR_KEY_HERE' || key.trim() === '';
