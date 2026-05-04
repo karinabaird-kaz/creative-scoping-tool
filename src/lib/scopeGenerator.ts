@@ -4,6 +4,14 @@ interface ScopeGeneratorInput {
   projectName?: string;
 }
 
+export interface RefineInput {
+  currentScope: string;
+  instruction: string;
+  brief: string;
+  clientName?: string;
+  projectName?: string;
+}
+
 const SCOPE_GENERATION_PROMPT = `You are a proposal writer for a creative and strategy agency. Convert the brief below into a concise, professional scope description for a client proposal.
 
 Tone and style:
@@ -85,35 +93,7 @@ ASSUMPTIONS:
 const isDemoMode = (key: string | undefined) =>
   !key || key === 'sk-ant-YOUR_KEY_HERE' || key.trim() === '';
 
-export async function generateScopeDescription(input: ScopeGeneratorInput): Promise<string> {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
-
-  if (isDemoMode(apiKey)) {
-    // Demo mode: return a realistic example scope after a short delay to simulate generation
-    await new Promise((resolve) => setTimeout(resolve, 1800));
-    const clientLine = input.clientName ? input.clientName : 'the client';
-    const projectLine = input.projectName ? ` — ${input.projectName}` : '';
-    return DEMO_SCOPE
-      .replace('{CLIENT}', clientLine)
-      .replace('{PROJECT}', projectLine) + '\n\n---\n⚠️ Demo mode: this is an example output. Add your Anthropic API key to generate real scopes from your brief.';
-  }
-
-  const contextPrefix = [
-    input.clientName && `Client: ${input.clientName}`,
-    input.projectName && `Project: ${input.projectName}`,
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  const briefWithContext = contextPrefix
-    ? `${contextPrefix}\n\n${input.brief}`
-    : input.brief;
-
-  const prompt = SCOPE_GENERATION_PROMPT.replace(
-    '[BRIEF WILL BE INSERTED HERE]',
-    briefWithContext
-  );
-
+async function callClaude(apiKey: string, messages: Array<{ role: string; content: string }>): Promise<string> {
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method: 'POST',
     headers: {
@@ -125,7 +105,7 @@ export async function generateScopeDescription(input: ScopeGeneratorInput): Prom
     body: JSON.stringify({
       model: 'claude-opus-4-5',
       max_tokens: 1500,
-      messages: [{ role: 'user', content: prompt }],
+      messages,
     }),
   });
 
@@ -147,4 +127,77 @@ export async function generateScopeDescription(input: ScopeGeneratorInput): Prom
   }
 
   return content.text;
+}
+
+export async function generateScopeDescription(input: ScopeGeneratorInput): Promise<string> {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+
+  if (isDemoMode(apiKey)) {
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    const clientLine = input.clientName ? input.clientName : 'the client';
+    const projectLine = input.projectName ? ` — ${input.projectName}` : '';
+    return DEMO_SCOPE
+      .replace('{CLIENT}', clientLine)
+      .replace('{PROJECT}', projectLine) +
+      '\n\n---\n⚠️ Demo mode: this is an example output. Add your Anthropic API key to generate real scopes from your brief.';
+  }
+
+  const contextPrefix = [
+    input.clientName && `Client: ${input.clientName}`,
+    input.projectName && `Project: ${input.projectName}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const briefWithContext = contextPrefix
+    ? `${contextPrefix}\n\n${input.brief}`
+    : input.brief;
+
+  const prompt = SCOPE_GENERATION_PROMPT.replace(
+    '[BRIEF WILL BE INSERTED HERE]',
+    briefWithContext
+  );
+
+  return callClaude(apiKey!, [{ role: 'user', content: prompt }]);
+}
+
+export async function refineScope(input: RefineInput): Promise<string> {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+
+  if (isDemoMode(apiKey)) {
+    await new Promise((resolve) => setTimeout(resolve, 1400));
+    // In demo mode, return a trimmed version of the current scope with a note
+    const trimmed = input.currentScope
+      .replace('\n\n---\n⚠️ Demo mode: this is an example output. Add your Anthropic API key to generate real scopes from your brief.', '')
+      .split('\n')
+      .filter((line) => line.trim() !== '')
+      .slice(0, 20)
+      .join('\n');
+    return trimmed + '\n\n---\n⚠️ Demo mode: refinement not available without an API key.';
+  }
+
+  const contextPrefix = [
+    input.clientName && `Client: ${input.clientName}`,
+    input.projectName && `Project: ${input.projectName}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const briefWithContext = contextPrefix
+    ? `${contextPrefix}\n\n${input.brief}`
+    : input.brief;
+
+  const initialPrompt = SCOPE_GENERATION_PROMPT.replace(
+    '[BRIEF WILL BE INSERTED HERE]',
+    briefWithContext
+  );
+
+  return callClaude(apiKey!, [
+    { role: 'user', content: initialPrompt },
+    { role: 'assistant', content: input.currentScope },
+    {
+      role: 'user',
+      content: `Please revise the scope description based on this feedback: ${input.instruction}\n\nKeep the same format and style. Output only the updated scope description.`,
+    },
+  ]);
 }
