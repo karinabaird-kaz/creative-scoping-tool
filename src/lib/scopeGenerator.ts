@@ -45,13 +45,63 @@ Now, based on the brief or information provided below, generate a complete scope
 
 Generate only the scope description text, with clear section headings. Do not include any metadata, explanations, or preamble. Start directly with the opening summary.`;
 
+const DEMO_SCOPE = `This estimate covers the strategy, creative development, and production of a refreshed brand identity for ${'{CLIENT}'}${'{PROJECT}'}.
+
+**Strategy Phase**
+
+We will begin with a brand discovery process to establish a clear strategic foundation. This includes a stakeholder workshop, competitive landscape review, and audience definition. The output is a Brand Strategy document capturing positioning, personality, tone of voice, and key messaging principles that will guide all creative work.
+
+**Ideation Phase**
+
+Building on the approved strategy, our creative team will explore three distinct visual identity directions. Each direction will be presented as a cohesive concept, including logo treatment, colour palette, typography, and example applications. Following client feedback, one direction will be selected to carry forward into development.
+
+**Development Phase**
+
+The selected direction will be refined and extended into a complete brand identity system. This includes finalisation of the logo suite, colour system, typography hierarchy, and core brand elements. The phase concludes with a presentation of the full identity system ready for client sign-off.
+
+**Production Phase**
+
+Approved brand assets will be packaged and prepared for handover. All files will be supplied in both print-ready and screen formats, along with a Brand Guidelines document to ensure consistent application across all future touchpoints.
+
+**Deliverables**
+
+- Primary logo suite (horizontal, stacked, icon-only) in AI, EPS, SVG, PNG, and JPG formats
+- Colour palette specifications (CMYK, RGB, HEX, Pantone)
+- Typography hierarchy with licensed font recommendations
+- Core brand elements (patterns, textures, graphic devices as applicable)
+- Brand Guidelines document (PDF, minimum 20 pages)
+- Master asset folder with organised, production-ready files
+
+**Exclusions**
+
+- Photography, illustration, or stock imagery
+- Website design or development
+- Print production or supplier management
+- Signage, environmental, or packaging design
+- Social media template production
+- Any deliverables not listed above
+
+**Assumptions**
+
+- Client will provide existing brand assets, references, and relevant background materials at project kick-off
+- A single key decision-maker or small working group (maximum three people) will provide consolidated feedback at each review stage
+- Client feedback will be provided within five business days of each presentation
+- This estimate covers one selected creative direction through to completion; additional directions or significant scope changes will be quoted separately`;
+
+const isDemoMode = (key: string | undefined) =>
+  !key || key === 'sk-ant-YOUR_KEY_HERE' || key.trim() === '';
+
 export async function generateScopeDescription(input: ScopeGeneratorInput): Promise<string> {
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
 
-  if (!apiKey) {
-    throw new Error(
-      'API key not configured. Please set VITE_ANTHROPIC_API_KEY in your .env.local file.'
-    );
+  if (isDemoMode(apiKey)) {
+    // Demo mode: return a realistic example scope after a short delay to simulate generation
+    await new Promise((resolve) => setTimeout(resolve, 1800));
+    const clientLine = input.clientName ? input.clientName : 'the client';
+    const projectLine = input.projectName ? ` — ${input.projectName}` : '';
+    return DEMO_SCOPE
+      .replace('{CLIENT}', clientLine)
+      .replace('{PROJECT}', projectLine) + '\n\n---\n⚠️ Demo mode: this is an example output. Add your Anthropic API key to generate real scopes from your brief.';
   }
 
   const contextPrefix = [

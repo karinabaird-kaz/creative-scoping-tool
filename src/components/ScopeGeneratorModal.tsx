@@ -1,6 +1,11 @@
 import { useState, useRef } from 'react';
 import { generateScopeDescription } from '../lib/scopeGenerator';
 
+const isDemo = () => {
+  const key = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+  return !key || key === 'sk-ant-YOUR_KEY_HERE' || key.trim() === '';
+};
+
 interface ScopeGeneratorModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -84,7 +89,7 @@ export function ScopeGeneratorModal({
           <div>
             <h2 className="text-[15px] font-bold text-white">Generate Scope Description</h2>
             <p className="text-[12px] text-white/50 mt-0.5">
-              Create client-facing scope text from a brief
+              {isDemo() ? 'Demo mode — showing example output' : 'Create client-facing scope text from a brief'}
             </p>
           </div>
           <button
@@ -213,7 +218,7 @@ export function ScopeGeneratorModal({
                     : 'bg-[#fff230] hover:bg-yellow-300 text-black'
                 }`}
               >
-                {isGenerating ? 'Generating…' : 'Generate Scope'}
+                {isGenerating ? 'Generating…' : isDemo() ? 'Preview Example' : 'Generate Scope'}
               </button>
             </>
           )}
