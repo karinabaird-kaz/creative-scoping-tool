@@ -2,6 +2,7 @@ import { useState } from 'react';
 import writeXlsxFile from 'write-excel-file/browser';
 import { DEFAULT_RATE, DISCIPLINES } from '../data/effortCalculatorData';
 import { Logo } from './Logo';
+import { ScopeGeneratorModal } from './ScopeGeneratorModal';
 
 interface Row {
   id: string;
@@ -71,6 +72,11 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [projectName, setProjectName] = useState('');
   const [proposalDesc, setProposalDesc] = useState('');
   const [internalNotes, setInternalNotes] = useState('');
+  const [isScopeGeneratorOpen, setIsScopeGeneratorOpen] = useState(false);
+
+  function handleScopeGenerated(text: string) {
+    setProposalDesc(text);
+  }
 
   function updateHours(id: string, field: HrsField, raw: string) {
     const value = raw === '' ? 0 : parseFloat(raw);
@@ -321,7 +327,17 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
           {/* Left: Proposal Description & T+C's — stretches to match table height */}
           <div className="flex-1 flex flex-col min-w-0">
-            <label className={sectionLabel}>Proposal Description & T+C's</label>
+            <div className="flex items-center justify-between mb-1.5">
+              <label className="text-[10px] font-semibold text-white/50 uppercase tracking-wider">
+                Proposal Description & T+C's
+              </label>
+              <button
+                onClick={() => setIsScopeGeneratorOpen(true)}
+                className="text-[11px] px-3 py-1 bg-[#fff230] hover:bg-yellow-300 text-black rounded-full font-semibold transition-colors"
+              >
+                Generate Description
+              </button>
+            </div>
             <textarea
               value={proposalDesc}
               onChange={(e) => setProposalDesc(e.target.value)}
@@ -463,6 +479,14 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         </div>{/* end flex row */}
 
       </div>
+
+      <ScopeGeneratorModal
+        isOpen={isScopeGeneratorOpen}
+        onClose={() => setIsScopeGeneratorOpen(false)}
+        onInsert={handleScopeGenerated}
+        clientName={clientName}
+        projectName={projectName}
+      />
     </div>
   );
 }
