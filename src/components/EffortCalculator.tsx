@@ -341,7 +341,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                       value={roundNotes[key]}
                       onChange={(e) => setRoundNotes((prev) => ({ ...prev, [key]: e.target.value }))}
                       placeholder="—"
-                      className="w-48 text-[12px] text-black placeholder-gray-300 focus:outline-none bg-transparent py-0.5"
+                      className="w-28 text-[12px] text-black placeholder-gray-300 focus:outline-none bg-transparent py-0.5"
                     />
                   </div>
                 ))}
