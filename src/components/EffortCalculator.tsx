@@ -355,7 +355,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
                 value={internalNotes}
                 onChange={(e) => setInternalNotes(e.target.value)}
                 placeholder="Additional notes…"
-                className="w-56 flex-shrink-0 px-3 py-2.5 text-[12px] text-black focus:outline-none placeholder-gray-300 resize-none bg-transparent"
+                className="w-[28rem] flex-shrink-0 px-3 py-2.5 text-[12px] text-black focus:outline-none placeholder-gray-300 resize-none bg-transparent"
               />
             </div>
           </div>
