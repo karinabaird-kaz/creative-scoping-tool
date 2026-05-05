@@ -72,6 +72,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const [projectName, setProjectName] = useState('');
   const [proposalDesc, setProposalDesc] = useState('');
   const [internalNotes, setInternalNotes] = useState('');
+  const [roundNotes, setRoundNotes] = useState({ r1: '', r2: '', r3: '', r4: '', r5: '', r6: '' });
   const [isScopeGeneratorOpen, setIsScopeGeneratorOpen] = useState(false);
 
   function handleScopeGenerated(text: string) {
@@ -113,6 +114,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     setProjectName('');
     setProposalDesc('');
     setInternalNotes('');
+    setRoundNotes({ r1: '', r2: '', r3: '', r4: '', r5: '', r6: '' });
   }
 
   // Totals
@@ -322,15 +324,40 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
             </div>
           </div>
 
-          {/* Right: Internal Notes — fills remaining width, stretches to match left column height */}
+          {/* Right: Internal Notes — round rows + free-form in one box */}
           <div className="flex-1 flex flex-col">
             <label className={sectionLabel}>Internal Notes</label>
-            <textarea
-              value={internalNotes}
-              onChange={(e) => setInternalNotes(e.target.value)}
-              placeholder="Internal notes…"
-              className="flex-1 bg-white border border-white/20 rounded-lg px-3 py-2.5 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-            />
+            <div className="flex-1 bg-white border border-white/20 rounded-lg flex flex-col overflow-hidden">
+
+              {/* R1–R6 structured rows */}
+              <div className="px-3 pt-2.5 pb-1 flex flex-col gap-0.5">
+                {(['r1','r2','r3','r4','r5','r6'] as const).map((key) => (
+                  <div key={key} className="flex items-center gap-2">
+                    <span className="text-[10px] font-semibold text-gray-400 uppercase w-5 flex-shrink-0">
+                      {key.toUpperCase()}
+                    </span>
+                    <input
+                      type="text"
+                      value={roundNotes[key]}
+                      onChange={(e) => setRoundNotes((prev) => ({ ...prev, [key]: e.target.value }))}
+                      placeholder="—"
+                      className="flex-1 text-[12px] text-black placeholder-gray-300 focus:outline-none bg-transparent py-0.5"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Divider */}
+              <div className="border-t border-gray-200 mx-3" />
+
+              {/* Free-form notes */}
+              <textarea
+                value={internalNotes}
+                onChange={(e) => setInternalNotes(e.target.value)}
+                placeholder="Additional notes…"
+                className="flex-1 px-3 py-2 text-[12px] text-black focus:outline-none placeholder-gray-300 resize-none bg-transparent"
+              />
+            </div>
           </div>
         </div>
 
