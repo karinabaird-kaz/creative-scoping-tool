@@ -128,7 +128,6 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
   const totalCost = rows.reduce((s, r) => s + getCost(r, globalRate), 0);
 
   async function exportXLSX() {
-    const NUM_COLS = 12;
     const filename = [clientName, projectName].filter(Boolean).join(' ')
       ? `${[clientName, projectName].filter(Boolean).join(' ')} - Effort Calculator`
       : 'Effort Calculator';
@@ -142,6 +141,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       alignVertical?: 'top' | 'center' | 'bottom';
       format?: string;
       span?: number;
+      rowSpan?: number;
       wrap?: boolean;
     };
 
@@ -161,23 +161,34 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       fontSize: 10,
     });
 
-    // ── Description (spans all cols, wraps, top-aligned) ──
-    const descRows: Cell[][] = proposalDesc
-      ? [
-          [{ value: proposalDesc, type: String, span: NUM_COLS, wrap: true, align: 'left', alignVertical: 'top', fontSize: 10 }],
-          Array(NUM_COLS).fill({ value: null }),
-        ]
-      : [];
+    const empty: Cell = { value: null };
 
-    // ── Headers ──
+    // Total number of rows: 1 header + N data + 1 total
+    const totalRows = 1 + rows.length + 1;
+
+    // ── Description cell in col M, row 1, spanning all rows ──
+    const descCell: Cell = proposalDesc
+      ? {
+          value: proposalDesc,
+          type: String,
+          wrap: true,
+          align: 'left',
+          alignVertical: 'top',
+          fontSize: 10,
+          rowSpan: totalRows,
+        }
+      : empty;
+
+    // ── Headers (col A–L + col M description) ──
     const headerRow: Cell[] = [
       { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
       hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'), hdr('Round 6'),
       hdr('Meetings'), hdr('FAT'),
       hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
+      descCell,
     ];
 
-    // ── Data rows ──
+    // ── Data rows (col A–L, col M empty — covered by rowSpan) ──
     const dataRows: Cell[][] = rows.map((r) => {
       const hrs = getHoursTotal(r);
       const rate = getEffectiveRate(r, globalRate);
@@ -190,23 +201,24 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       ];
     });
 
-    // ── Total row ──
+    // ── Total row (col A–L) ──
     const totalRow: Cell[] = [
       { value: 'TOTAL', fontWeight: 'bold', align: 'left', fontSize: 10 },
       c(totalR1, true), c(totalR2, true), c(totalR3, true),
       c(totalR4, true), c(totalR5, true), c(totalR6, true),
       c(totalMeetings, true), c(totalContingency, true),
       c(totalHrs, true),
-      { value: null },
+      empty,
       c(totalCost, true, '$#,##0.00'),
     ];
 
-    const sheetData = [...descRows, headerRow, ...dataRows, totalRow];
+    const sheetData = [headerRow, ...dataRows, totalRow];
     const sheetOptions = {
       columns: [
         { width: 24 }, { width: 10 }, { width: 10 }, { width: 10 },
         { width: 10 }, { width: 10 }, { width: 10 }, { width: 14 },
         { width: 10 }, { width: 13 }, { width: 12 }, { width: 13 },
+        { width: 60 }, // col M — Proposal Description
       ],
     };
 
@@ -327,7 +339,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
 
           {/* Left: Proposal Description & T+C's — stretches to match table height */}
           <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex items-center justify-between mb-1.5">
+            <div className="flex items-center gap-3 mb-1.5">
               <label className="text-[10px] font-semibold text-white/50 uppercase tracking-wider">
                 Proposal Description & T+C's
               </label>
