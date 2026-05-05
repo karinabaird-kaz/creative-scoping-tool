@@ -337,25 +337,23 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         {/* ── Bottom: Proposal Description (left) | Effort Calc table (right) ── */}
         <div className="flex gap-4 items-stretch">
 
-          {/* Left: Proposal Description & T+C's — stretches to match table height */}
+          {/* Left: Proposal Description — stretches to match table height */}
           <div className="flex-1 flex flex-col min-w-0">
-            <div className="flex items-center gap-3 mb-1.5">
-              <label className="text-[10px] font-semibold text-white/50 uppercase tracking-wider">
-                Proposal Description & T+C's
-              </label>
+            <label className={sectionLabel}>Proposal Description</label>
+            <div className="relative flex-1 flex flex-col">
+              <textarea
+                value={proposalDesc}
+                onChange={(e) => setProposalDesc(e.target.value)}
+                placeholder="Enter proposal description and terms & conditions…"
+                className="flex-1 w-full bg-white border border-white/20 rounded-xl px-4 py-3 pb-10 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
+              />
               <button
                 onClick={() => setIsScopeGeneratorOpen(true)}
-                className="text-[11px] px-3 py-1 bg-[#fff230] hover:bg-yellow-300 text-black rounded-full font-semibold transition-colors"
+                className="absolute bottom-3 right-3 text-[11px] px-3 py-1 bg-[#fff230] hover:bg-yellow-300 text-black rounded-full font-semibold transition-colors"
               >
                 Generate Description
               </button>
             </div>
-            <textarea
-              value={proposalDesc}
-              onChange={(e) => setProposalDesc(e.target.value)}
-              placeholder="Enter proposal description and terms & conditions…"
-              className="flex-1 w-full bg-white border border-white/20 rounded-xl px-4 py-3 text-[13px] text-black focus:outline-none focus:border-white/40 placeholder-gray-300 resize-none"
-            />
           </div>
 
           {/* Right: Effort Calculator table */}
