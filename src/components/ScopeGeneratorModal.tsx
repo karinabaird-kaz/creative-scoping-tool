@@ -107,7 +107,7 @@ export function ScopeGeneratorModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl max-w-2xl w-full max-h-[90vh] overflow-hidden flex flex-col shadow-2xl">
+      <div className="bg-white rounded-xl max-w-[840px] w-full max-h-[90vh] min-h-[580px] overflow-hidden flex flex-col shadow-2xl">
 
         {/* Header */}
         <div className="bg-[#0a0a0a] px-6 py-4 flex items-center justify-between">
@@ -161,7 +161,7 @@ export function ScopeGeneratorModal({
                   value={briefInput}
                   onChange={(e) => setBriefInput(e.target.value)}
                   placeholder="Paste your project brief, deliverables list, or existing scope notes here…"
-                  rows={8}
+                  rows={10}
                   className="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300 resize-none"
                 />
               ) : (
