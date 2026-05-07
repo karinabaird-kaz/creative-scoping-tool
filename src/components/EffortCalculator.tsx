@@ -168,20 +168,21 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
     // span:12 occupies cols A–L; 11 nulls fill B–L; notesCell lands in M
     const topRow: Cell[] = [
       {
-        value: proposalDesc || null,
+        value: proposalDesc || ' ',
         type: String,
         span: 12,
         wrap: true,
         align: 'left',
         alignVertical: 'top',
         fontSize: 10,
+        height: 200,
       },
       null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
       null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
       null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
       null as unknown as Cell, null as unknown as Cell, // 11 nulls (B–L)
       {
-        value: notesText || null,
+        value: notesText || ' ',
         type: String,
         wrap: true,
         align: 'left',
