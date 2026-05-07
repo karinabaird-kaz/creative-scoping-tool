@@ -143,54 +143,66 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       alignVertical?: 'top' | 'center' | 'bottom';
       format?: string;
       span?: number;
-      rowSpan?: number;
       wrap?: boolean;
     };
 
     const c = (value: number, bold = false, format?: string): Cell => ({
-      value,
-      type: Number,
-      align: 'center',
-      fontWeight: bold ? 'bold' : undefined,
-      fontSize: 10,
-      format,
+      value, type: Number, align: 'center',
+      fontWeight: bold ? 'bold' : undefined, fontSize: 10, format,
     });
-
     const hdr = (value: string): Cell => ({
-      value,
-      fontWeight: 'bold',
-      align: 'center',
-      fontSize: 10,
+      value, fontWeight: 'bold', align: 'center', fontSize: 10,
     });
-
     const empty: Cell = { value: null };
 
-    // Total number of rows: 1 header + N data + 1 total
-    const totalRows = 1 + rows.length + 1;
+    // ── Build notes text: R1–R6 rows + additional notes ──
+    const roundLines = (['r1','r2','r3','r4','r5','r6'] as const)
+      .filter((k) => roundNotes[k].trim())
+      .map((k) => `${k.toUpperCase()}  ${roundNotes[k]}`);
+    let notesText = roundLines.join('\n');
+    if (internalNotes.trim()) {
+      notesText = notesText ? `${notesText}\n\n${internalNotes}` : internalNotes;
+    }
 
-    // ── Description cell in col M, row 1, spanning all rows ──
-    const descCell: Cell = proposalDesc
-      ? {
-          value: proposalDesc,
-          type: String,
-          wrap: true,
-          align: 'left',
-          alignVertical: 'top',
-          fontSize: 10,
-          rowSpan: totalRows,
-        }
-      : empty;
+    // ── Row 1: A1:L1 merged (proposal desc) + M1 (notes) ──
+    // span:12 occupies cols A–L; 11 nulls fill B–L; notesCell lands in M
+    const topRow: Cell[] = [
+      {
+        value: proposalDesc || null,
+        type: String,
+        span: 12,
+        wrap: true,
+        align: 'left',
+        alignVertical: 'top',
+        fontSize: 10,
+      },
+      null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
+      null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
+      null as unknown as Cell, null as unknown as Cell, null as unknown as Cell,
+      null as unknown as Cell, null as unknown as Cell, // 11 nulls (B–L)
+      {
+        value: notesText || null,
+        type: String,
+        wrap: true,
+        align: 'left',
+        alignVertical: 'top',
+        fontSize: 10,
+      },
+    ];
 
-    // ── Headers (col A–L + col M description) ──
+    // ── Row 2: blank spacer ──
+    const blankRow: Cell[] = Array(13).fill(empty);
+
+    // ── Row 3: headers ──
     const headerRow: Cell[] = [
       { value: 'Service', fontWeight: 'bold', align: 'left', fontSize: 10 },
       hdr('Round 1'), hdr('Round 2'), hdr('Round 3'), hdr('Round 4'), hdr('Round 5'), hdr('Round 6'),
       hdr('Meetings'), hdr('FAT'),
       hdr('Hours Total'), hdr('$ per Hour'), hdr('Cost ($)'),
-      descCell,
+      empty,
     ];
 
-    // ── Data rows (col A–L, col M empty — covered by rowSpan) ──
+    // ── Data rows ──
     const dataRows: Cell[][] = rows.map((r) => {
       const hrs = getHoursTotal(r);
       const rate = getEffectiveRate(r, globalRate);
@@ -200,10 +212,11 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
         c(r.meetings), c(r.contingency),
         c(hrs), c(rate),
         c(hrs * rate, false, '$#,##0.00'),
+        empty,
       ];
     });
 
-    // ── Total row (col A–L) ──
+    // ── Total row ──
     const totalRow: Cell[] = [
       { value: 'TOTAL', fontWeight: 'bold', align: 'left', fontSize: 10 },
       c(totalR1, true), c(totalR2, true), c(totalR3, true),
@@ -212,15 +225,16 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       c(totalHrs, true),
       empty,
       c(totalCost, true, '$#,##0.00'),
+      empty,
     ];
 
-    const sheetData = [headerRow, ...dataRows, totalRow];
+    const sheetData = [topRow, blankRow, headerRow, ...dataRows, totalRow];
     const sheetOptions = {
       columns: [
         { width: 24 }, { width: 10 }, { width: 10 }, { width: 10 },
         { width: 10 }, { width: 10 }, { width: 10 }, { width: 14 },
         { width: 10 }, { width: 13 }, { width: 12 }, { width: 13 },
-        { width: 60 }, // col M — Proposal Description
+        { width: 64 }, // col M — Notes
       ],
     };
 
