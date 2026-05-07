@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Fix demo-mode refine stripping blank lines between sections — remove split/filter/join, replace with trimEnd()
+FILE: src/lib/scopeGenerator.ts
+BEFORE: .split('\n').filter((line) => line.trim() !== '').slice(0, 20).join('\n')
+AFTER: .trimEnd()
+---
+
+---
 CHANGE: Revert flex layout; use simple fixed h-[320px] scrollable text area so Refine section is always visible below it
 FILE: src/components/ScopeGeneratorModal.tsx
 BEFORE: <div className="flex-1 overflow-hidden flex flex-col p-6"> / flex flex-col flex-1 wrapper / flex-1 overflow-y-auto text area / shrink-0 refine

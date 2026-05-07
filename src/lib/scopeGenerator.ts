@@ -169,10 +169,7 @@ export async function refineScope(input: RefineInput): Promise<string> {
     // In demo mode, return a trimmed version of the current scope with a note
     const trimmed = input.currentScope
       .replace('\n\n---\n⚠️ Demo mode: this is an example output. Add your Anthropic API key to generate real scopes from your brief.', '')
-      .split('\n')
-      .filter((line) => line.trim() !== '')
-      .slice(0, 20)
-      .join('\n');
+      .trimEnd();
     return trimmed + '\n\n---\n⚠️ Demo mode: refinement not available without an API key.';
   }
 
