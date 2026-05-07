@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Revert flex layout; use simple fixed h-[320px] scrollable text area so Refine section is always visible below it
+FILE: src/components/ScopeGeneratorModal.tsx
+BEFORE: <div className="flex-1 overflow-hidden flex flex-col p-6"> / flex flex-col flex-1 wrapper / flex-1 overflow-y-auto text area / shrink-0 refine
+AFTER: <div className="flex-1 overflow-y-auto p-6"> / plain div wrapper / h-[320px] overflow-y-auto text area / plain div refine
+---
+
+---
 CHANGE: Fix Refine section being hidden by adding shrink-0 so it always holds its height at the bottom; label row also shrink-0
 FILE: src/components/ScopeGeneratorModal.tsx
 BEFORE: {/* Refinement input */}

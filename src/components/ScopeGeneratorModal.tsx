@@ -126,7 +126,7 @@ export function ScopeGeneratorModal({
         </div>
 
         {/* Body */}
-        <div className="flex-1 overflow-hidden flex flex-col p-6">
+        <div className="flex-1 overflow-y-auto p-6">
 
           {/* Step 1: Input (hidden once generated) */}
           {!generatedText && (
@@ -194,8 +194,8 @@ export function ScopeGeneratorModal({
 
           {/* Step 2: Generated output + refinement */}
           {generatedText && (
-            <div className="flex flex-col flex-1">
-              <div className="flex items-center justify-between mb-2 shrink-0">
+            <div>
+              <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
                   Generated Scope Description
                 </p>
@@ -207,14 +207,14 @@ export function ScopeGeneratorModal({
                 </button>
               </div>
 
-              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 flex-1 overflow-y-auto mb-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 h-[320px] overflow-y-auto mb-4">
                 <p className="text-[12px] text-gray-800 whitespace-pre-wrap leading-relaxed">
                   {generatedText}
                 </p>
               </div>
 
               {/* Refinement input */}
-              <div className="shrink-0">
+              <div>
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   Refine
                 </p>
