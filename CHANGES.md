@@ -1,6 +1,18 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Fix Refine section being hidden by adding shrink-0 so it always holds its height at the bottom; label row also shrink-0
+FILE: src/components/ScopeGeneratorModal.tsx
+BEFORE: {/* Refinement input */}
+              <div>
+AFTER: {/* Refinement input */}
+              <div className="shrink-0">
+
+BEFORE: <div className="flex items-center justify-between mb-2">
+AFTER: <div className="flex items-center justify-between mb-2 shrink-0">
+---
+
+---
 CHANGE: Generated scope text area now flex-expands to fill dead space in modal instead of being capped at max-h-52
 FILE: src/components/ScopeGeneratorModal.tsx
 BEFORE: <div className="flex-1 overflow-y-auto p-6">

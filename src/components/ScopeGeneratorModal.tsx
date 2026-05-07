@@ -195,7 +195,7 @@ export function ScopeGeneratorModal({
           {/* Step 2: Generated output + refinement */}
           {generatedText && (
             <div className="flex flex-col flex-1">
-              <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center justify-between mb-2 shrink-0">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider">
                   Generated Scope Description
                 </p>
@@ -214,7 +214,7 @@ export function ScopeGeneratorModal({
               </div>
 
               {/* Refinement input */}
-              <div>
+              <div className="shrink-0">
                 <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
                   Refine
                 </p>
