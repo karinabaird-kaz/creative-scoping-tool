@@ -144,6 +144,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       format?: string;
       span?: number;
       wrap?: boolean;
+      height?: number;
     };
 
     const c = (value: number, bold = false, format?: string): Cell => ({
