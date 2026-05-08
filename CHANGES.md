@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: PDF upload now extracts text-only via pdf.js, ignoring embedded images — fixes token overflow on image-heavy PDFs; remove pre-flight size check (no longer needed); show "Extracting text…" state in file drop zone; disable Generate button while extracting
+FILE: package.json, src/components/ScopeGeneratorModal.tsx
+BEFORE: FileReader.readAsText() read raw PDF binary including images; pre-flight token check blocked oversized inputs
+AFTER: pdfjs-dist (^4.10.38) added to dependencies; PDF files use pdfjsLib.getDocument() to extract text per page; non-PDF files still use FileReader.readAsText(); isExtracting state drives UI feedback; pre-flight check removed
+---
+
+---
 CHANGE: Add pre-flight token size check in handleGenerate() — catches oversized inputs (e.g. image-heavy PDFs) before hitting the API, with a helpful error message
 FILE: src/components/ScopeGeneratorModal.tsx
 BEFORE: (no size check — API error returned after call)

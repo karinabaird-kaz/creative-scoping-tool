@@ -1,5 +1,9 @@
 import { useState, useRef } from 'react';
+import * as pdfjsLib from 'pdfjs-dist';
 import { generateScopeDescription, refineScope } from '../lib/scopeGenerator';
+
+// Use CDN worker so we don't have to bundle the large worker file
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`;
 
 const isDemo = () => {
   const key = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
@@ -29,17 +33,12 @@ export function ScopeGeneratorModal({
   const [isRefining, setIsRefining] = useState(false);
   const [refinementInput, setRefinementInput] = useState('');
   const [error, setError] = useState('');
+  const [isExtracting, setIsExtracting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleGenerate() {
     if (!briefInput.trim()) {
       setError('Please enter a brief or project description');
-      return;
-    }
-    // Rough token estimate: ~4 chars per token. Warn before hitting API limit.
-    const estimatedTokens = Math.round(briefInput.length / 4);
-    if (estimatedTokens > 150000) {
-      setError(`Your input is too large (approx. ${estimatedTokens.toLocaleString()} tokens). If you uploaded a PDF, try copying the text from it and using "Paste Brief" instead — PDFs with embedded images inflate the file size significantly.`);
       return;
     }
     setError('');
@@ -97,16 +96,42 @@ export function ScopeGeneratorModal({
     setInputMode('brief');
   }
 
-  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     setFileName(file.name);
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const text = event.target?.result as string;
-      setBriefInput(text ?? '');
-    };
-    reader.readAsText(file);
+    setError('');
+
+    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+
+    if (isPdf) {
+      setIsExtracting(true);
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const pageTexts: string[] = [];
+        for (let i = 1; i <= pdf.numPages; i++) {
+          const page = await pdf.getPage(i);
+          const content = await page.getTextContent();
+          const pageText = content.items
+            .map((item) => ('str' in item ? item.str : ''))
+            .join(' ');
+          pageTexts.push(pageText);
+        }
+        setBriefInput(pageTexts.join('\n\n'));
+      } catch {
+        setError('Could not extract text from this PDF. Try copying the text manually and using Paste Brief instead.');
+      } finally {
+        setIsExtracting(false);
+      }
+    } else {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const text = event.target?.result as string;
+        setBriefInput(text ?? '');
+      };
+      reader.readAsText(file);
+    }
   }
 
   if (!isOpen) return null;
@@ -182,7 +207,12 @@ export function ScopeGeneratorModal({
                     onChange={handleFileChange}
                     className="hidden"
                   />
-                  {fileName ? (
+                  {isExtracting ? (
+                    <div>
+                      <p className="text-[13px] font-medium text-black mb-1">Extracting text…</p>
+                      <p className="text-[11px] text-gray-400">Reading {fileName}</p>
+                    </div>
+                  ) : fileName ? (
                     <div>
                       <p className="text-[13px] font-medium text-black mb-1">{fileName}</p>
                       <p className="text-[11px] text-gray-400">Click to change file</p>
@@ -285,14 +315,14 @@ export function ScopeGeneratorModal({
               </button>
               <button
                 onClick={handleGenerate}
-                disabled={isGenerating || !briefInput.trim()}
+                disabled={isGenerating || isExtracting || !briefInput.trim()}
                 className={`text-xs font-semibold rounded-full px-5 py-1.5 transition-colors ${
-                  isGenerating || !briefInput.trim()
+                  isGenerating || isExtracting || !briefInput.trim()
                     ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                     : 'bg-[#fff230] hover:bg-yellow-300 text-black'
                 }`}
               >
-                {isGenerating ? 'Generating…' : isDemo() ? 'Preview Example' : 'Generate Scope'}
+                {isGenerating ? 'Generating…' : isExtracting ? 'Reading file…' : isDemo() ? 'Preview Example' : 'Generate Scope'}
               </button>
             </>
           )}
