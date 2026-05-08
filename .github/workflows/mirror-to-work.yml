@@ -12,20 +12,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check token is set
-        env:
-          TOKEN: ${{ secrets.WORK_REPO_TOKEN }}
+      - name: Set up SSH
         run: |
-          if [ -z "$TOKEN" ]; then
-            echo "ERROR: WORK_REPO_TOKEN secret is empty or not set"
-            exit 1
-          else
-            echo "Token is set (length: ${#TOKEN})"
-          fi
+          mkdir -p ~/.ssh
+          echo "${{ secrets.WORK_REPO_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          echo "IdentityFile ~/.ssh/deploy_key" >> ~/.ssh/config
 
       - name: Push to karinabaird/brand-scoping-tool
-        env:
-          TOKEN: ${{ secrets.WORK_REPO_TOKEN }}
         run: |
-          git remote add work https://karinabaird:${TOKEN}@github.com/karinabaird/brand-scoping-tool.git
+          git remote add work git@github.com:karinabaird/brand-scoping-tool.git
           git push work master
