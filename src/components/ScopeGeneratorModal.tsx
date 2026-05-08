@@ -36,6 +36,12 @@ export function ScopeGeneratorModal({
       setError('Please enter a brief or project description');
       return;
     }
+    // Rough token estimate: ~4 chars per token. Warn before hitting API limit.
+    const estimatedTokens = Math.round(briefInput.length / 4);
+    if (estimatedTokens > 150000) {
+      setError(`Your input is too large (approx. ${estimatedTokens.toLocaleString()} tokens). If you uploaded a PDF, try copying the text from it and using "Paste Brief" instead — PDFs with embedded images inflate the file size significantly.`);
+      return;
+    }
     setError('');
     setIsGenerating(true);
     try {

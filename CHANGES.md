@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Add pre-flight token size check in handleGenerate() — catches oversized inputs (e.g. image-heavy PDFs) before hitting the API, with a helpful error message
+FILE: src/components/ScopeGeneratorModal.tsx
+BEFORE: (no size check — API error returned after call)
+AFTER: if estimatedTokens > 150000, show error explaining to use Paste Brief for PDFs
+---
+
+---
 CHANGE: Fix demo-mode refine stripping blank lines between sections — remove split/filter/join, replace with trimEnd()
 FILE: src/lib/scopeGenerator.ts
 BEFORE: .split('\n').filter((line) => line.trim() !== '').slice(0, 20).join('\n')
