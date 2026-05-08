@@ -12,7 +12,20 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Push to karinabaird/brand-scoping-tool
+      - name: Check token is set
+        env:
+          TOKEN: ${{ secrets.WORK_REPO_TOKEN }}
         run: |
-          git remote add work https://x-access-token:${{ secrets.WORK_REPO_TOKEN }}@github.com/karinabaird/brand-scoping-tool.git
+          if [ -z "$TOKEN" ]; then
+            echo "ERROR: WORK_REPO_TOKEN secret is empty or not set"
+            exit 1
+          else
+            echo "Token is set (length: ${#TOKEN})"
+          fi
+
+      - name: Push to karinabaird/brand-scoping-tool
+        env:
+          TOKEN: ${{ secrets.WORK_REPO_TOKEN }}
+        run: |
+          git remote add work https://karinabaird:${TOKEN}@github.com/karinabaird/brand-scoping-tool.git
           git push work master
