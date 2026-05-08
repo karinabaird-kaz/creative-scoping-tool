@@ -23,4 +23,4 @@ jobs:
       - name: Push to karinabaird/brand-scoping-tool
         run: |
           git remote add work git@github.com:karinabaird/brand-scoping-tool.git
-          git push work master
+          git push work master --force
