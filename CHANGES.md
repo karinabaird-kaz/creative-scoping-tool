@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Overhaul system prompt — ban markdown formatting, integrate deliverables into each section, enforce correct phase naming
+FILE: src/lib/scopeGenerator.ts
+BEFORE: Used **bold** section headers (rendered as asterisks in plain text); had a separate "Deliverables" section; used "Design / Production" as a phase name
+AFTER: Explicit "no markdown, no asterisks" rule; deliverables are the last bullet(s) within each phase section; phase names locked to: Strategy, Creative Development, Design Development, Production (shoots only), Website Creative Direction
+---
+
+---
 CHANGE: PDF upload now extracts text-only via pdf.js, ignoring embedded images — fixes token overflow on image-heavy PDFs; remove pre-flight size check (no longer needed); show "Extracting text…" state in file drop zone; disable Generate button while extracting
 FILE: package.json, src/components/ScopeGeneratorModal.tsx
 BEFORE: FileReader.readAsText() read raw PDF binary including images; pre-flight token check blocked oversized inputs

@@ -22,23 +22,38 @@ Tone and style:
 - Use Australian English spelling.
 - Do not mention hours, rates, or staff roles.
 - Do not use em dashes.
+- Do not use markdown formatting. No asterisks, no bold, no italic. Plain text only.
+- Section headings are plain text on their own line, not bold or capitalised.
+- Deliverables are not a separate section. Include the specific final output (format, quantity, size) as the last bullet point(s) within each relevant section.
+
+Phase naming rules — use only these names, only when relevant to the brief:
+- Strategy
+- Creative Development
+- Design Development (never use "Design / Production" or "Production" unless it is a physical shoot or print run)
+- Production (only for briefs involving physical production: video shoots, photography shoots, print runs)
+- Website Creative Direction (only if web design is in scope)
 
 Structure (include only relevant phases):
 
 This estimate includes [one sentence summary].
 
 Strategy
-- [bullet: what is being done, e.g. gap analysis, messaging matrix, workshop, positioning]
+- [what is being done, e.g. workshop, positioning, gap analysis, messaging framework]
+- [final output from this phase, e.g. "Brand positioning document"]
 
 Creative Development
-- [bullet: what concepts/directions are being explored and how many]
-- [bullet: what is being refined and to what level]
+- [what concepts/directions are being explored and how many]
+- [what is being refined and to what level]
+- [final creative output from this phase]
 
-Design / Production
-- [bullet: specific assets being produced, with quantities and formats]
+Design Development
+- [specific assets being designed, with quantities]
+- [final files delivered: format, size, quantity]
 
-Deliverables
-- [bulleted list of final outputs with formats, sizes, quantities]
+Production
+- [only include if there is a physical shoot or print run]
+- [crew, location, format details]
+- [final deliverable from production]
 
 ESTIMATE DOES NOT INCLUDE:
 - Additional concepts beyond the above scope
