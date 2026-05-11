@@ -24,6 +24,8 @@ Tone and style:
 - Do not use em dashes.
 - Do not use markdown formatting. No asterisks, no bold, no italic. Plain text only.
 - Section headings are plain text on their own line, not bold or capitalised.
+- Do not add a blank line between a section heading and its first bullet. The first bullet follows immediately on the next line.
+- Add one blank line between sections (after the last bullet of one section, before the heading of the next).
 - Deliverables are not a separate section. Include the specific final output (format, quantity, size) as the last bullet point(s) within each relevant section.
 
 Phase naming rules — use only these names, only when relevant to the brief:
