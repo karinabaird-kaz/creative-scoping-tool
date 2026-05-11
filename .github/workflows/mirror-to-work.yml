@@ -6,6 +6,7 @@ on:
 
 jobs:
   mirror:
+    if: github.repository_owner == 'karinabaird-kaz'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
