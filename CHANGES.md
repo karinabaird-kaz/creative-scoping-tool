@@ -1,6 +1,13 @@
 # Scope Generator Change Log
 
 ---
+CHANGE: Add mammoth.js to extract text-only from .docx uploads — fixes token overflow on Word documents (same root cause as PDF binary issue)
+FILE: package.json, src/components/ScopeGeneratorModal.tsx
+BEFORE: .docx files read via FileReader.readAsText() — raw ZIP/XML binary caused 211k+ token overflow
+AFTER: mammoth ^1.8.0 added to dependencies; .docx files use mammoth.extractRawText() to extract plain text only; PDF and plain text handling unchanged
+---
+
+---
 CHANGE: Overhaul system prompt — ban markdown formatting, integrate deliverables into each section, enforce correct phase naming
 FILE: src/lib/scopeGenerator.ts
 BEFORE: Used **bold** section headers (rendered as asterisks in plain text); had a separate "Deliverables" section; used "Design / Production" as a phase name

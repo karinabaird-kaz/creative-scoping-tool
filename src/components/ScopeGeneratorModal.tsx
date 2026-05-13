@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
+import mammoth from 'mammoth';
 import { generateScopeDescription, refineScope } from '../lib/scopeGenerator';
 
 // Use CDN worker so we don't have to bundle the large worker file
@@ -102,7 +103,9 @@ export function ScopeGeneratorModal({
     setFileName(file.name);
     setError('');
 
-    const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+    const fileName = file.name.toLowerCase();
+    const isPdf = file.type === 'application/pdf' || fileName.endsWith('.pdf');
+    const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' || fileName.endsWith('.docx');
 
     if (isPdf) {
       setIsExtracting(true);
@@ -121,6 +124,17 @@ export function ScopeGeneratorModal({
         setBriefInput(pageTexts.join('\n\n'));
       } catch {
         setError('Could not extract text from this PDF. Try copying the text manually and using Paste Brief instead.');
+      } finally {
+        setIsExtracting(false);
+      }
+    } else if (isDocx) {
+      setIsExtracting(true);
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const result = await mammoth.extractRawText({ arrayBuffer });
+        setBriefInput(result.value);
+      } catch {
+        setError('Could not extract text from this Word document. Try saving as .txt or copying the text and using Paste Brief instead.');
       } finally {
         setIsExtracting(false);
       }
