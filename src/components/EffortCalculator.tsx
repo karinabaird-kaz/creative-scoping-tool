@@ -232,7 +232,7 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       empty,
     ];
 
-    const sheetData = [topRow, blankRow, headerRow, ...dataRows, totalRow];
+    const sheetData = [topRow, blankRow, headerRow, ...dataRows, blankRow, totalRow];
     const sheetOptions = {
       columns: [
         { width: 24 }, { width: 10 }, { width: 10 }, { width: 10 },
