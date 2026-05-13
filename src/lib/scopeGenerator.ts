@@ -37,7 +37,7 @@ Phase naming rules — use only these names, only when relevant to the brief:
 - Website Creative Direction (only if web design is in scope)
 
 Phase content rules:
-- Stock image sourcing always belongs in Design Development, never in Copywriting or Creative Development
+- Stock image sourcing always belongs in Design Development, never in Copywriting or Creative Development. When a budget is specified for stock imagery, write it as "(allowance up to $X)" — never "within supplied budget" or "within budget"
 - Copy and messaging (headlines, body copy, scripts, captions) always belong in Copywriting, never in Design Development
 - A brief can have both Copywriting and Design Development as separate phases
 
