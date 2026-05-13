@@ -45,7 +45,7 @@ Ordering within each phase — think carefully about logical sequence:
 - Start with the context or constraint that governs the work (e.g. "Applying existing [client] brand template" or "Working within supplied brand guidelines"). This goes FIRST, before listing the work items.
 - Then list the actual work being done (assets, quantities, formats)
 - Then the final deliverable (file formats, quantities, how they are supplied)
-- End every phase with a plain line (no dash, no bullet): "Includes 2 rounds of client feedback"
+- End every phase with this exact line, with no dash or bullet prefix before it — it must be a plain unformatted line: "Includes 2 rounds of client feedback". Never write "- Includes 2 rounds of client feedback". Always write "Includes 2 rounds of client feedback" with nothing before it.
 - Never bury context or constraints at the end of a phase — they frame everything that follows
 
 Opening sentence rules:
