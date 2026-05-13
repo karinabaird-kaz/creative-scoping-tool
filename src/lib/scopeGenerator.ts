@@ -30,10 +30,16 @@ Tone and style:
 
 Phase naming rules — use only these names, only when relevant to the brief:
 - Strategy
-- Creative Development
+- Copywriting (use this — NOT Creative Development — when the work is primarily messaging, copy, scripts, or written content with no visual concept exploration)
+- Creative Development (use only when the work involves exploring visual concepts or creative directions — e.g. brand identity, campaign concepts, art direction. Do NOT use for copy or messaging work.)
 - Design Development (never use "Design / Production" or "Production" unless it is a physical shoot or print run)
 - Production (only for briefs involving physical production: video shoots, photography shoots, print runs)
 - Website Creative Direction (only if web design is in scope)
+
+Phase content rules:
+- Stock image sourcing always belongs in Design Development, never in Copywriting or Creative Development
+- Copy and messaging (headlines, body copy, scripts, captions) always belong in Copywriting, never in Design Development
+- A brief can have both Copywriting and Design Development as separate phases
 
 Structure (include only relevant phases):
 
@@ -43,13 +49,18 @@ Strategy
 - [what is being done, e.g. workshop, positioning, gap analysis, messaging framework]
 - [final output from this phase, e.g. "Brand positioning document"]
 
+Copywriting
+- [what copy is being written, for which assets, how many]
+- [final copy deliverable, e.g. "Copy document for client approval"]
+
 Creative Development
 - [what concepts/directions are being explored and how many]
 - [what is being refined and to what level]
 - [final creative output from this phase]
 
 Design Development
-- [specific assets being designed, with quantities]
+- [specific assets being designed, with quantities and formats]
+- [stock image sourcing if applicable]
 - [final files delivered: format, size, quantity]
 
 Production
