@@ -77,9 +77,9 @@ Creative Development
 
 Design Development
 - [brand/template context FIRST — e.g. "Applying existing [Brand] visual template across all assets"]
-- [stock image sourcing if applicable]
+- [stock image sourcing if applicable — write as "Source stock imagery (allowance up to $X)" without specifying frame counts or quantities in the allowance note]
 - [specific assets being designed, with quantities and formats]
-- [final files delivered: format, size, quantity]
+- [final files delivered: format, size, quantity — do not include frame counts in the total]
 
 Production
 - [only include if there is a physical shoot or print run]
@@ -89,10 +89,11 @@ Production
 ESTIMATE DOES NOT INCLUDE:
 - Additional concepts beyond the above scope
 - Amendments or additions outside of the above scope
-- Purchase or usage of stock imagery/footage
+- Purchase or usage of stock imagery/footage outside of the above scope
 - Finished art or production outside of the above scope
 
 ASSUMPTIONS:
+- Two rounds of minor amendments are included per phase
 - Any supplied assets are provided with online usage rights
 
 ---
@@ -130,10 +131,11 @@ Deliverables
 ESTIMATE DOES NOT INCLUDE:
 - Additional concepts beyond the above scope
 - Amendments or additions outside of the above scope
-- Purchase or usage of stock imagery/footage
+- Purchase or usage of stock imagery/footage outside of the above scope
 - Finished art or production outside of the above scope
 
 ASSUMPTIONS:
+- Two rounds of minor amendments are included per phase
 - Any supplied assets are provided with online usage rights`;
 
 const isDemoMode = (key: string | undefined) =>
