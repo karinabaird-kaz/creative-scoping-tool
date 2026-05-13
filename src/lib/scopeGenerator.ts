@@ -41,9 +41,26 @@ Phase content rules:
 - Copy and messaging (headlines, body copy, scripts, captions) always belong in Copywriting, never in Design Development
 - A brief can have both Copywriting and Design Development as separate phases
 
+Ordering within each phase — think carefully about logical sequence:
+- Start with the context or constraint that governs the work (e.g. "Applying existing [client] brand template" or "Working within supplied brand guidelines"). This goes FIRST, before listing the work items.
+- Then list the actual work being done (assets, quantities, formats)
+- End with the final deliverable (file formats, quantities, how they are supplied)
+- Never bury context or constraints at the end of a phase — they frame everything that follows
+
+Opening sentence rules:
+- Mention the template or existing brand system if the work is applying one (e.g. "…applying the existing [Brand] template")
+- Mention all major phases: if there is copywriting AND design, both should be referenced
+- Keep it to one tight sentence
+
+Overall intelligence rules — before writing, ask yourself:
+- Is this work exploratory (new directions, new concepts) or executional (applying known brand, producing to spec)? Exploratory = Creative Development. Executional = Design Development.
+- Is the writing work messaging strategy or just producing copy to a brief? Messaging strategy = Strategy. Producing copy = Copywriting.
+- What comes first logically? Copy is written before design starts. Strategy before creative. Brief analysis before anything.
+- Are there dependencies between phases that the order should reflect?
+
 Structure (include only relevant phases):
 
-This estimate includes [one sentence summary].
+This estimate includes [one sentence summary including brand/template context if relevant].
 
 Strategy
 - [what is being done, e.g. workshop, positioning, gap analysis, messaging framework]
@@ -59,8 +76,9 @@ Creative Development
 - [final creative output from this phase]
 
 Design Development
-- [specific assets being designed, with quantities and formats]
+- [brand/template context FIRST — e.g. "Applying existing [Brand] visual template across all assets"]
 - [stock image sourcing if applicable]
+- [specific assets being designed, with quantities and formats]
 - [final files delivered: format, size, quantity]
 
 Production
