@@ -204,19 +204,21 @@ export function EffortCalculator({ onBack, onHome }: EffortCalculatorProps) {
       empty,
     ];
 
-    // ── Data rows ──
-    const dataRows: Cell[][] = rows.map((r) => {
-      const hrs = getHoursTotal(r);
-      const rate = getEffectiveRate(r, globalRate);
-      return [
-        { value: r.name, type: String, align: 'left', fontSize: 10 },
-        c(r.r1), c(r.r2), c(r.r3), c(r.r4), c(r.r5), c(r.r6),
-        c(r.meetings), c(r.contingency),
-        c(hrs), c(rate),
-        c(hrs * rate, false, '$#,##0.00'),
-        empty,
-      ];
-    });
+    // ── Data rows (exclude rows with zero total hours) ──
+    const dataRows: Cell[][] = rows
+      .filter((r) => getHoursTotal(r) > 0)
+      .map((r) => {
+        const hrs = getHoursTotal(r);
+        const rate = getEffectiveRate(r, globalRate);
+        return [
+          { value: r.name, type: String, align: 'left', fontSize: 10 },
+          c(r.r1), c(r.r2), c(r.r3), c(r.r4), c(r.r5), c(r.r6),
+          c(r.meetings), c(r.contingency),
+          c(hrs), c(rate),
+          c(hrs * rate, false, '$#,##0.00'),
+          empty,
+        ];
+      });
 
     // ── Total row ──
     const totalRow: Cell[] = [
