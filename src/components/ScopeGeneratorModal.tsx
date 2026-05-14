@@ -1,7 +1,7 @@
 import { useState, useRef } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import mammoth from 'mammoth';
-import { generateScopeDescription, refineScope } from '../lib/scopeGenerator';
+import { generateScopeDescription, refineScope, queryBrief } from '../lib/scopeGenerator';
 
 // Use CDN worker so we don't have to bundle the large worker file
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/4.10.38/pdf.worker.min.mjs`;
@@ -33,6 +33,10 @@ export function ScopeGeneratorModal({
   const [isGenerating, setIsGenerating] = useState(false);
   const [isRefining, setIsRefining] = useState(false);
   const [refinementInput, setRefinementInput] = useState('');
+  const [bottomMode, setBottomMode] = useState<'refine' | 'query'>('refine');
+  const [queryInput, setQueryInput] = useState('');
+  const [queryResponse, setQueryResponse] = useState('');
+  const [isQuerying, setIsQuerying] = useState(false);
   const [error, setError] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -80,6 +84,25 @@ export function ScopeGeneratorModal({
     }
   }
 
+  async function handleQuery() {
+    if (!queryInput.trim()) return;
+    setIsQuerying(true);
+    setQueryResponse('');
+    try {
+      const result = await queryBrief({
+        brief: briefInput,
+        question: queryInput,
+        clientName,
+        projectName,
+      });
+      setQueryResponse(result);
+    } catch (err) {
+      setQueryResponse(err instanceof Error ? err.message : 'Failed to answer query');
+    } finally {
+      setIsQuerying(false);
+    }
+  }
+
   function handleInsert() {
     if (generatedText.trim()) {
       onInsert(generatedText);
@@ -93,6 +116,9 @@ export function ScopeGeneratorModal({
     setFileName('');
     setGeneratedText('');
     setRefinementInput('');
+    setQueryInput('');
+    setQueryResponse('');
+    setBottomMode('refine');
     setError('');
     setInputMode('brief');
   }
@@ -263,33 +289,87 @@ export function ScopeGeneratorModal({
                 </p>
               </div>
 
-              {/* Refinement input */}
+              {/* Refine / Query tabs */}
               <div>
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1.5">
-                  Refine
-                </p>
-                <div className="flex gap-2">
-                  <input
-                    type="text"
-                    value={refinementInput}
-                    onChange={(e) => setRefinementInput(e.target.value)}
-                    onKeyDown={(e) => { if (e.key === 'Enter' && !isRefining) handleRefine(); }}
-                    placeholder='e.g. "make it shorter" or "remove the strategy section"'
-                    className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300"
-                    disabled={isRefining}
-                  />
+                <div className="flex gap-2 mb-2">
                   <button
-                    onClick={handleRefine}
-                    disabled={isRefining || !refinementInput.trim()}
-                    className={`text-xs font-semibold rounded-lg px-4 py-2 transition-colors whitespace-nowrap ${
-                      isRefining || !refinementInput.trim()
-                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                        : 'bg-[#0a0a0a] hover:bg-gray-800 text-white'
+                    onClick={() => setBottomMode('refine')}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-colors ${
+                      bottomMode === 'refine'
+                        ? 'bg-[#0a0a0a] text-white'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
                     }`}
                   >
-                    {isRefining ? 'Refining…' : 'Refine'}
+                    Refine
+                  </button>
+                  <button
+                    onClick={() => setBottomMode('query')}
+                    className={`px-3 py-1 rounded-full text-[11px] font-semibold transition-colors ${
+                      bottomMode === 'query'
+                        ? 'bg-[#0a0a0a] text-white'
+                        : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                    }`}
+                  >
+                    Query Brief
                   </button>
                 </div>
+
+                {bottomMode === 'refine' && (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={refinementInput}
+                      onChange={(e) => setRefinementInput(e.target.value)}
+                      onKeyDown={(e) => { if (e.key === 'Enter' && !isRefining) handleRefine(); }}
+                      placeholder='e.g. "make it shorter" or "remove the strategy section"'
+                      className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300"
+                      disabled={isRefining}
+                    />
+                    <button
+                      onClick={handleRefine}
+                      disabled={isRefining || !refinementInput.trim()}
+                      className={`text-xs font-semibold rounded-lg px-4 py-2 transition-colors whitespace-nowrap ${
+                        isRefining || !refinementInput.trim()
+                          ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                          : 'bg-[#0a0a0a] hover:bg-gray-800 text-white'
+                      }`}
+                    >
+                      {isRefining ? 'Refining…' : 'Refine'}
+                    </button>
+                  </div>
+                )}
+
+                {bottomMode === 'query' && (
+                  <div>
+                    <div className="flex gap-2">
+                      <input
+                        type="text"
+                        value={queryInput}
+                        onChange={(e) => setQueryInput(e.target.value)}
+                        onKeyDown={(e) => { if (e.key === 'Enter' && !isQuerying) handleQuery(); }}
+                        placeholder='e.g. "What is the budget?" or "Who is the target audience?"'
+                        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-[13px] text-black focus:outline-none focus:border-gray-400 placeholder-gray-300"
+                        disabled={isQuerying}
+                      />
+                      <button
+                        onClick={handleQuery}
+                        disabled={isQuerying || !queryInput.trim()}
+                        className={`text-xs font-semibold rounded-lg px-4 py-2 transition-colors whitespace-nowrap ${
+                          isQuerying || !queryInput.trim()
+                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                            : 'bg-[#0a0a0a] hover:bg-gray-800 text-white'
+                        }`}
+                      >
+                        {isQuerying ? 'Asking…' : 'Ask'}
+                      </button>
+                    </div>
+                    {queryResponse && (
+                      <div className="mt-2 px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-lg text-[12px] text-gray-800 leading-relaxed whitespace-pre-wrap">
+                        {queryResponse}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           )}

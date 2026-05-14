@@ -246,3 +246,41 @@ export async function refineScope(input: RefineInput): Promise<string> {
     },
   ]);
 }
+
+export interface QueryInput {
+  brief: string;
+  question: string;
+  clientName?: string;
+  projectName?: string;
+}
+
+export async function queryBrief(input: QueryInput): Promise<string> {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+
+  if (isDemoMode(apiKey)) {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    return 'Query mode is not available in demo mode. Add your Anthropic API key to use this feature.';
+  }
+
+  const contextPrefix = [
+    input.clientName && `Client: ${input.clientName}`,
+    input.projectName && `Project: ${input.projectName}`,
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  const briefWithContext = contextPrefix
+    ? `${contextPrefix}\n\n${input.brief}`
+    : input.brief;
+
+  const prompt = `You are a helpful assistant for a creative agency. A project brief has been provided below. Answer the user's question about it concisely and accurately. If the answer is not in the brief, say so clearly.
+
+BRIEF:
+${briefWithContext}
+
+QUESTION: ${input.question}
+
+Answer concisely in plain text. No bullet points unless the answer naturally calls for them.`;
+
+  return callClaude(apiKey!, [{ role: 'user', content: prompt }]);
+}
